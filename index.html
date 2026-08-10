@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050505" />
+    <meta name="description" content="严士然的 AI 产品经理作品集，聚焦智能硬件、AI 交互与消费电子产品定义。" />
+    <title>严士然｜AI Product Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="image" href="./assets/intro-orbit-side-v2.png" />
+    <link rel="preload" as="image" href="./assets/earth-space-transparent-v5.png" />
+    <link rel="preload" as="image" href="./assets/earth-equirectangular-v6.png" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=aime-sleep-case-89" />
+  </head>
+  <body class="intro-locked profile-entry-pending">
+    <div class="intro-gate" id="introGate" role="dialog" aria-modal="true" aria-label="作品集开场动画">
+      <div class="intro-portrait" aria-hidden="true"></div>
+      <canvas class="intro-particle-canvas" id="introParticleCanvas" aria-hidden="true"></canvas>
+      <div class="intro-stars" aria-hidden="true"></div>
+      <div class="intro-topline" aria-hidden="true">
+        <span>YS / 产品经理</span>
+        <span>ORIGIN · 2026</span>
+      </div>
+      <div class="intro-coordinate" aria-hidden="true">31.2304° N<br />121.4737° E</div>
+      <button class="intro-enter" type="button" aria-label="点击进入作品集">
+        <span class="intro-planet-hit shared-planet atom-mode" id="sharedPlanet" aria-hidden="true">
+          <canvas class="earth-surface" aria-hidden="true"></canvas>
+          <span class="quantum-shell" aria-hidden="true">
+            <span class="quantum-core"></span>
+            <span class="atom-ring atom-ring-a"><i></i></span>
+            <span class="atom-ring atom-ring-b"><i></i></span>
+            <span class="atom-ring atom-ring-c"><i></i></span>
+          </span>
+          <i></i>
+        </span>
+        <span class="intro-enter-label"><b>点击进入</b></span>
+      </button>
+    </div>
+    <div class="intro-welcome" id="introWelcome" aria-hidden="true">欢迎来到我的作品集</div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="cursor-glow" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="返回首页">
+        <span class="brand-mark">YS</span>
+        <span>Yan Shiran <i>/</i> 产品经理</span>
+      </a>
+      <button class="menu-toggle" aria-expanded="false" aria-label="打开导航">菜单</button>
+      <nav class="main-nav" aria-label="主导航">
+        <a href="#profile">个人介绍</a>
+        <div class="nav-cluster">
+          <a href="#work">作品集</a>
+          <div class="nav-preview category-preview">
+            <button data-filter="hardware"><b>硬件</b><span>量产与定义</span></button>
+            <button data-filter="software"><b>软件</b><span>AI 与体验</span></button>
+            <button data-filter="concept"><b>概念</b><span>未来探索</span></button>
+          </div>
+        </div>
+        <div class="nav-cluster">
+          <a href="#timeline">时间线</a>
+          <div class="nav-preview">
+            <button data-jump="year-2026"><b>2026</b><span>创新与融合</span></button>
+            <button data-jump="year-2025"><b>2025</b><span>技术深耕</span></button>
+            <button data-jump="year-2020"><b>20—24</b><span>基石沉淀</span></button>
+          </div>
+        </div>
+        <a href="#lifestyle">关于我</a>
+      </nav>
+      <a class="contact-link" href="#lifestyle">保持联系 <span>↗</span></a>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="hero-ambient" aria-hidden="true">
+          <div class="orbital orbital-a"></div>
+          <div class="orbital orbital-b"></div>
+          <div class="orbital orbital-c"></div>
+          <i class="orbit-planet planet-ice planet-orbit-a"></i>
+          <i class="orbit-planet planet-lava planet-orbit-b"></i>
+          <i class="orbit-planet planet-metal planet-orbit-c"></i>
+          <div class="hero-planet-slot" aria-hidden="true"></div>
+        </div>
+        <div class="eyebrow hero-eyebrow"><span class="status-dot"></span> OPEN TO OPPORTUNITIES · 2026</div>
+        <div class="hero-copy">
+          <p class="hero-index">00 / INTRODUCTION</p>
+          <h1><span>把复杂技术，</span><br /><em>变成自然体验。</em></h1>
+          <p>我是一名专注于 AI 交互、智能硬件与消费电子的产品经理。连接研究、设计与商业，把未来带进日常。</p>
+        </div>
+        <button class="scroll-cue" data-jump="profile" aria-label="向下浏览">
+          <span>SCROLL TO EXPLORE</span><i>↓</i>
+        </button>
+        <div class="hero-meta">
+          <span>BASED IN CHINA</span><span>31.2304° N · 121.4737° E</span>
+        </div>
+      </section>
+
+      <section class="stage section-shell" id="profile">
+        <header class="section-head reveal">
+          <div><span class="section-no">01</span><span class="eyebrow">PROFILE / SELECTED EXPERIENCE</span></div>
+          <p>四段实习经历 <span>点击展开完整内容</span></p>
+        </header>
+        <div class="experience-intro reveal">
+          <div>
+            <span class="eyebrow">INTERNSHIP JOURNEY · 2025—NOW</span>
+            <h2>从用户洞察，<br />到产品真正落地。</h2>
+          </div>
+          <p>经历覆盖 AIoT 硬件、AI 陪伴机器人、操作系统与全球充电业务。在不同产品阶段中，持续参与定义、验证、交付与上市。</p>
+        </div>
+        <div class="experience-stack reveal">
+          <article class="experience-row" data-experience>
+            <button class="experience-summary" aria-expanded="false" aria-controls="experience-honor">
+              <span class="experience-index">01</span>
+              <span class="experience-date">2026.05—至今</span>
+              <span class="experience-brand"><small>HONOR 荣耀</small><strong>硬件产品经理</strong></span>
+              <span class="experience-one-line">负责 E-bike 欧洲出海交付，并从 0 到 1 定义新一代智能音频眼镜。</span>
+              <span class="experience-logo"><img class="logo-invert" src="./assets/logos/honor.svg" alt="HONOR Logo" /></span>
+              <span class="experience-toggle"><i></i><i></i></span>
+            </button>
+            <div class="experience-detail" id="experience-honor">
+              <div class="experience-detail-inner">
+                <div class="experience-detail-lead">
+                  <span>AIoT 部门 · 穿戴产品 & 运动产品</span>
+                  <h3>产品及项目交付<br />0—1 全流程</h3>
+                  <p>从海外上市交付、质量排障，到产品形态创新、成本控制与供应链定点，承担产品从定义到落地的关键工作。</p>
+                </div>
+                <div class="experience-projects">
+                  <section class="experience-project">
+                    <div class="project-heading"><span>PROJECT 01</span><h4>E-bike 出海项目</h4><small>欧洲市场 · 产品及项目交付</small></div>
+                    <div class="experience-points">
+                      <p><b>全流程项目管理</b><span>统筹 E-bike 欧洲上市筹备，主导 RFI 应答并顺利通过 GTM 评审；跨部门完成海外营销及售后物料交付，保障项目按期闭环。</span></p>
+                      <p><b>质量攻坚与排障</b><span>解决跨部门 Beta 测试排期冲突并亲自验收，累计推动解决 10+ 项软硬件核心问题，保障产品高质量出海。</span></p>
+                    </div>
+                  </section>
+                  <section class="experience-project">
+                    <div class="project-heading"><span>PROJECT 02</span><h4>新一代智能音频眼镜</h4><small>中年男性商务差旅 · 0—1 产品定义</small></div>
+                    <div class="experience-points">
+                      <p><b>产品定义与形态创新</b><span>提出“镜架与智能镜腿分离”的模块化架构，兼顾传统眼镜舒适度与智能音频交互。</span></p>
+                      <p><b>体验打磨与成本控制</b><span>跟进 ID 设计与声学评估并严格把控 BOM；联合研发对标竞品调优，实现多频段音质提升 30%+。</span></p>
+                      <p><b>供应链整合与立项</b><span>引入 6 家优质供应商竞标并成功定点，迭代 5 版 RFI 应答方案，推动项目顺利立项，预计 10 月量产。</span></p>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="experience-row" data-experience>
+            <button class="experience-summary" aria-expanded="false" aria-controls="experience-tcl">
+              <span class="experience-index">02</span>
+              <span class="experience-date">2026.02—2026.05</span>
+              <span class="experience-brand"><small>TCL 实业</small><strong>AI 产品经理</strong></span>
+              <span class="experience-one-line">用 500 份问卷与 30+ 深访识别家长低效哄睡和儿童睡前难安抚问题，规划下一代 AI 睡眠陪伴。</span>
+              <span class="experience-logo"><img src="./assets/logos/tcl.svg" alt="TCL Logo" /></span>
+              <span class="experience-toggle"><i></i><i></i></span>
+            </button>
+            <div class="experience-detail" id="experience-tcl">
+              <div class="experience-detail-inner">
+                <div class="experience-detail-lead">
+                  <span>机器人部门 · AI 陪伴机器人 AIME</span>
+                  <h3>看见家长，<br />也理解儿童。</h3>
+                  <p>参与 AIME 陪伴机器人新品迭代开发，抓住家长哄睡与儿童睡眠的核心需求，明确下一代产品定义。</p>
+                </div>
+                <div class="experience-projects single-project">
+                  <section class="experience-project">
+                    <div class="project-heading"><span>PRODUCT DEFINITION</span><h4>AIME AI 陪伴机器人</h4><small>需求研究 · 竞品定位 · AI 主动交互</small></div>
+                    <div class="experience-points">
+                      <p><b>需求调研</b><span>通过 500 份问卷及 30+ 深度访谈，精准发现家长“低效哄睡”困扰与儿童“睡前难以安抚”问题，为产品定义提供数据支撑。</span></p>
+                      <p><b>竞品分析</b><span>剖析主流儿童 AI 玩具，挖掘父母购买产品用于哄睡的真实需求，输出竞品报告，确立“AI 睡眠陪伴”的差异化定位。</span></p>
+                      <p><b>AI 情感化睡眠规划</b><span>规划睡眠主动 AI 干预方案，设计基于儿童情绪与作息的主动问询及睡眠哄睡机制，提升产品在睡前场景下的价值。</span></p>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="experience-row" data-experience>
+            <button class="experience-summary" aria-expanded="false" aria-controls="experience-vivo">
+              <span class="experience-index">03</span>
+              <span class="experience-date">2025.10—2026.02</span>
+              <span class="experience-brand"><small>vivo 维沃</small><strong>软件产品经理</strong></span>
+              <span class="experience-one-line">覆盖 AI 笔记、Pad OS6 质量闭环、交互专利与折叠屏主动式 AIOS 规划。</span>
+              <span class="experience-logo"><img src="./assets/logos/vivo.svg" alt="vivo Logo" /></span>
+              <span class="experience-toggle"><i></i><i></i></span>
+            </button>
+            <div class="experience-detail" id="experience-vivo">
+              <div class="experience-detail-inner">
+                <div class="experience-detail-lead">
+                  <span>大屏 OS 部门 · 平板 & 折叠屏</span>
+                  <h3>让 AI 能力，<br />进入真实创作流。</h3>
+                  <p>参与 AI 笔记竞品研究、新 OS 版本质量闭环、交互专利设计与折叠手机 AIOS 场景规划。</p>
+                </div>
+                <div class="experience-projects single-project">
+                  <section class="experience-project">
+                    <div class="project-heading"><span>AI OS & EXPERIENCE</span><h4>大屏 OS 产品规划</h4><small>竞品洞察 · 质量交付 · 交互创新</small></div>
+                    <div class="experience-points">
+                      <p><b>笔记类 App 竞品分析</b><span>剖析 Notion、IMA 等 AI 笔记产品，挖掘生成式 AI 在创作流中的交互痛点，提出提升 AI 介入有效性的方案。</span></p>
+                      <p><b>Pad OS6 问题排查</b><span>闭环管理 Pad OS6 版本质量，推动研发解决 60+ 项 Bug、体验与动效问题，确保高质量交付。</span></p>
+                      <p><b>交互创新与专利</b><span>撰写手写笔与视频剪辑结合的发明专利，定义“笔势 + 多指令”多模态输入范式，提升视频创作效率。</span></p>
+                      <p><b>折叠手机 AIOS 规划</b><span>面向 35+ 商务人群的工作及差旅场景，设计主动式 AIOS 方案，主动预测日程并生成简报，降低应用切换成本。</span></p>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="experience-row" data-experience>
+            <button class="experience-summary" aria-expanded="false" aria-controls="experience-anker">
+              <span class="experience-index">04</span>
+              <span class="experience-date">2025.03—2025.09</span>
+              <span class="experience-brand"><small>Anker 安克</small><strong>硬件产品经理</strong></span>
+              <span class="experience-one-line">支持车载无线充全球上市，并用 3000+ 样本与 KANO 模型规划 2026 Cable 产品路标。</span>
+              <span class="experience-logo"><img class="logo-invert" src="./assets/logos/anker.svg" alt="Anker Innovations Logo" /></span>
+              <span class="experience-toggle"><i></i><i></i></span>
+            </button>
+            <div class="experience-detail" id="experience-anker">
+              <div class="experience-detail-inner">
+                <div class="experience-detail-lead">
+                  <span>Charging 部门 · 车品 & Cable 业务</span>
+                  <h3>用数据决策，<br />连接全球上市。</h3>
+                  <p>负责车充产品 0.5—1 的全球化上市准备，并输出数据驱动的 Cable 产品规划。</p>
+                </div>
+                <div class="experience-projects">
+                  <section class="experience-project">
+                    <div class="project-heading"><span>PROJECT 01</span><h4>车载无线充支架</h4><small>全球上市 · 竞争力测试 · 定价策略</small></div>
+                    <div class="experience-result"><b>RESULT</b><span>2025 年 7 月全球上市，覆盖亚马逊、官网、沃尔玛与顺电等渠道，预计年销量突破 20 万台。</span></div>
+                    <div class="experience-points">
+                      <p><b>数据决策</b><span>独立设计场景化测试并获得 327 份有效样本，使核心竞争力较竞品提升 25.3%；使用 PSM 模型锚定 $45.99 定价并通过上市评审。</span></p>
+                      <p><b>跨团队协同</b><span>协同 IDC 与 BM 团队强化“360° 旋转”与“安装位置”卖点可视化，通过完善说明指引拦截 50% 潜在售后问题。</span></p>
+                    </div>
+                  </section>
+                  <section class="experience-project">
+                    <div class="project-heading"><span>PROJECT 02</span><h4>收纳数据线产品规划</h4><small>2026 产品路标 · 预计 NPS 40+</small></div>
+                    <div class="experience-points">
+                      <p><b>全球用户洞察</b><span>操盘中、美、德、英四国 3000+ 份定量调研及 50+ 人国内定性访谈；用 KANO 模型量化 20 项功能优先级。</span></p>
+                      <p><b>产品定义与规划</b><span>输出 PRD 并主导大盘及竞品分析，锁定 2026 年新中端产品路标及后续上市排期。</span></p>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="orbit-section section-shell" id="timeline">
+        <header class="section-head reveal">
+          <div><span class="section-no">03</span><span class="eyebrow">TIMELINE / PRODUCT ORBIT</span></div>
+          <p>沿时间轨道，查看我的成长 <span>拖动轨道切换</span></p>
+        </header>
+        <div class="orbit-showcase reveal">
+          <div class="orbit-project-panel">
+            <div class="orbit-panel-top">
+              <span class="eyebrow">SELECTED WORK · 2020—2026</span>
+              <span class="orbit-project-count"><b>01</b> / 08</span>
+            </div>
+            <div class="orbit-year-wrap">
+              <span class="orbit-year-shadow">2026</span>
+              <strong class="orbit-year">2026</strong>
+            </div>
+            <div class="orbit-project-copy">
+              <div class="orbit-project-meta"><span>大屏 OS</span><i></i><span>功能规划</span></div>
+              <h2>vivo OriginOS 6 HD</h2>
+              <p>负责平板与折叠屏的软件功能规划与质量管理，推动原子笔记专业学习功能、PC 级 CAD 生态适配与 OriginOS 6 HD 质量闭环。</p>
+              <button class="orbit-open-project">查看项目 <span>↗</span></button>
+            </div>
+            <div class="orbit-pagination" aria-label="项目切换">
+              <button class="orbit-prev" aria-label="上一个项目">←</button>
+              <div class="orbit-progress" aria-label="项目时间轴">
+                <i class="orbit-progress-fill"></i>
+                <button class="orbit-time-marker is-active" data-orbit-time="0" aria-label="跳转到 2026 vivo OriginOS 6 HD"><span>2026</span></button>
+                <button class="orbit-time-marker" data-orbit-time="1" aria-label="跳转到 2026 TCL AiMe 睡眠陪伴机器人"></button>
+                <button class="orbit-time-marker" data-orbit-time="2" aria-label="跳转到 2026 AI 智能眼镜交互"></button>
+                <button class="orbit-time-marker" data-orbit-time="3" aria-label="跳转到 2025 Aiper 泳池机器人"><span>2025</span></button>
+                <button class="orbit-time-marker" data-orbit-time="4" aria-label="跳转到 2025 Anker 车载无线充支架"></button>
+                <button class="orbit-time-marker" data-orbit-time="5" aria-label="跳转到 2026 Anker 收纳充电短线"></button>
+                <button class="orbit-time-marker" data-orbit-time="6" aria-label="跳转到 2026 vivo 折叠屏主动式 AIOS"><span>2026</span></button>
+                <button class="orbit-time-marker" data-orbit-time="7" aria-label="跳转到 2026 ADO E-bike 欧洲上市"><span>2026</span></button>
+              </div>
+              <button class="orbit-next" aria-label="下一个项目">→</button>
+            </div>
+          </div>
+          <div class="orbit-visual" aria-label="可拖动的项目轨道">
+            <div class="orbit-halo"></div>
+            <div class="orbit-path path-outer"></div>
+            <div class="orbit-path path-inner"></div>
+            <div class="orbit-coordinate x-axis"></div>
+            <div class="orbit-coordinate y-axis"></div>
+            <div class="orbit-focus-card">
+              <img src="./assets/vivo/originos6-hd.jpg" alt="vivo OriginOS 6 HD 平板系统项目视觉" />
+              <div class="focus-card-label"><span>ACTIVE PROJECT</span><b>01</b></div>
+              <span class="focus-card-corner">2026</span>
+            </div>
+            <div class="orbit-thumbs">
+              <button class="orbit-thumb is-active" data-orbit-index="0" aria-label="vivo OriginOS 6 HD"><img src="./assets/vivo/originos6-hd.jpg" alt="vivo OriginOS 6 HD 平板系统项目视觉" /></button>
+              <button class="orbit-thumb" data-orbit-index="1" aria-label="TCL AiMe 睡眠陪伴机器人"><img src="./assets/orbit/tcl-ai.png" alt="TCL AiMe 睡眠陪伴机器人项目视觉" /></button>
+              <button class="orbit-thumb" data-orbit-index="2" aria-label="AI 智能眼镜交互"><img src="./assets/orbit/ai-glasses.png" alt="AI 智能眼镜交互项目视觉" /></button>
+              <button class="orbit-thumb" data-orbit-index="3" aria-label="Aiper 泳池机器人"><img src="./assets/aiper/scuba-s3-hero.png" alt="Aiper Scuba S3 泳池机器人水下清洁视觉" /></button>
+              <button class="orbit-thumb" data-orbit-index="4" aria-label="Anker 车载无线充支架"><img src="./assets/orbit/anker-car.png" alt="Anker 车载无线充支架项目视觉" /></button>
+              <button class="orbit-thumb" data-orbit-index="5" aria-label="Anker 收纳充电短线"><img src="./assets/orbit/anker-cable-lineup.png" alt="Anker 收纳充电短线产品规划视觉" /></button>
+              <button class="orbit-thumb" data-orbit-index="6" aria-label="vivo 折叠屏主动式 AIOS"><img src="./assets/vivo-aios/foldable-overview.jpg" alt="vivo 折叠屏主动式 AIOS 待办简报界面" /></button>
+              <button class="orbit-thumb" data-orbit-index="7" aria-label="ADO E-bike 欧洲上市"><img src="./assets/orbit/ebike.png" alt="ADO E-bike 欧洲上市项目视觉" /></button>
+            </div>
+            <div class="orbit-drag-hint"><i></i><span>↔</span> AUTO ORBIT · DRAG TO CONTROL</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="work section-shell" id="work">
+        <header class="section-head reveal">
+          <div><span class="section-no">02</span><span class="eyebrow">WORK / PRODUCT MATRIX</span></div>
+          <p>从上市产品到未来概念 <span>点击或拖动选择</span></p>
+        </header>
+        <div class="record-matrix book-matrix reveal" data-record-matrix aria-label="产品项目书册选择器">
+          <div class="record-matrix-stage">
+            <button class="matrix-record matrix-violet" data-matrix-card data-matrix-index="0" aria-label="选择 Death Experience Space 概念作品" data-pdf="./assets/concepts/a1.pdf" data-reader="death-experience" data-reader-title="Death Experience Space" data-reader-kicker="CONCEPT PROJECT · A1—A5">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve concept-sleeve"><img class="matrix-cover-image concept-cover" src="./assets/concepts/emotional-harmonizer-cover.png" alt="Death Experience Space 概念作品封面" /><span class="matrix-shade"></span><b>Death Experience Space</b><small>CONCEPT PRODUCT · A1—A5</small><em>01</em><span class="matrix-pdf-hint">点击查看概念作品 ↗</span></span><span class="matrix-spine">DEATH EXPERIENCE · 01</span></span>
+            </button>
+            <button class="matrix-record matrix-cobalt" data-matrix-card data-matrix-index="1" aria-label="选择 Evil in the Chair 概念作品" data-pdf="./assets/concepts/b1.pdf" data-reader="evil-chair" data-reader-title="Evil in the Chair" data-reader-kicker="CONCEPT PROJECT · B1—B5">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve concept-sleeve"><img class="matrix-cover-image concept-cover" src="./assets/concepts/evil-in-chair-cover.png" alt="Evil in the Chair 电竞健康系统概念作品封面" /><span class="matrix-shade"></span><b>Evil in the Chair</b><small>CONCEPT PRODUCT · B1—B5</small><em>02</em><span class="matrix-pdf-hint">点击查看概念作品 ↗</span></span><span class="matrix-spine">EVIL IN THE CHAIR · 02</span></span>
+            </button>
+            <button class="matrix-record matrix-emerald" data-matrix-card data-matrix-index="2" aria-label="选择 Emotional Harmonizer 概念作品" data-pdf="./assets/concepts/emotional-harmonizer.pdf" data-reader="emotional-harmonizer" data-reader-title="Emotional Harmonizer" data-reader-kicker="CONCEPT PROJECT · EMOTIONAL HARMONIZER">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve concept-sleeve"><img class="matrix-cover-image concept-cover" src="./assets/concepts/death-experience-cover.png" alt="Emotional Harmonizer 情绪调节设备概念作品封面" /><span class="matrix-shade"></span><b>Emotional Harmonizer</b><small>CONCEPT PRODUCT · SERVICE DESIGN</small><em>03</em><span class="matrix-pdf-hint">点击查看概念作品 ↗</span></span><span class="matrix-spine">EMOTIONAL HARMONIZER · 03</span></span>
+            </button>
+            <button class="matrix-record matrix-emerald" data-matrix-card data-matrix-index="3" data-project="vivo-os" aria-label="打开 vivo OriginOS 6 HD 项目">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve"><img class="matrix-cover-image" src="./assets/vivo/originos6-hd.jpg" alt="vivo OriginOS 6 HD 平板系统项目" /><span class="matrix-shade"></span><b>vivo OriginOS 6 HD</b><small>TABLET &amp; FOLDABLE OS · 2026</small><em>04</em></span><span class="matrix-spine">VIVO ORIGINOS 6 HD · 04</span></span>
+            </button>
+            <button class="matrix-record matrix-amber" data-matrix-card data-matrix-index="4" data-project="aiper-pool" aria-label="打开 Aiper 泳池机器人项目">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve"><img class="matrix-cover-image" src="./assets/aiper/scuba-s3-hero.png" alt="Aiper Scuba S3 泳池机器人项目" /><span class="matrix-shade"></span><b>Aiper 泳池机器人</b><small>BETA EXPERIENCE · 2025</small><em>05</em></span><span class="matrix-spine">AIPER POOL ROBOT · 05</span></span>
+            </button>
+            <button class="matrix-record matrix-cobalt" data-matrix-card data-matrix-index="5" data-project="vivo-aios" aria-label="打开 vivo 折叠屏主动式 AIOS 项目">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve"><img class="matrix-cover-image" src="./assets/vivo-aios/foldable-overview.jpg" alt="vivo 折叠屏主动式 AIOS 待办简报项目" /><span class="matrix-shade"></span><b>折叠屏主动式 AIOS</b><small>PROACTIVE AI EXPERIENCE · 2026</small><em>06</em></span><span class="matrix-spine">VIVO PROACTIVE AIOS · 06</span></span>
+            </button>
+            <button class="matrix-record matrix-crimson" data-matrix-card data-matrix-index="6" data-project="tcl-aime" aria-label="打开 TCL AiMe 睡眠陪伴机器人项目">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve"><img class="matrix-cover-image" src="./assets/orbit/tcl-ai.png" alt="TCL AiMe 睡眠陪伴机器人项目视觉" /><span class="matrix-shade"></span><b>AiMe 睡眠陪伴</b><small>AI SLEEP COMPANION · 2026</small><em>07</em></span><span class="matrix-spine">AIME SLEEP COMPANION · 07</span></span>
+            </button>
+            <button class="matrix-record matrix-violet" data-matrix-card data-matrix-index="7" data-project="anker-car" aria-label="打开 Anker 车载无线充支架项目">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve"><img class="matrix-cover-image" src="./assets/orbit/anker-car.png" alt="Anker 车载无线充支架项目" /><span class="matrix-shade"></span><b>Anker 车载无线充支架</b><small>GLOBAL LAUNCH · JULY 2025</small><em>08</em></span><span class="matrix-spine">ANKER CAR CHARGER · 08</span></span>
+            </button>
+            <button class="matrix-record matrix-emerald" data-matrix-card data-matrix-index="8" data-project="anker-short-cable" aria-label="打开 Anker 收纳充电短线项目">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve"><img class="matrix-cover-image" src="./assets/orbit/anker-cable-detail.png" alt="Anker 收纳充电短线产品规划" /><span class="matrix-shade"></span><b>Anker 收纳充电短线</b><small>2026 PRODUCT ROADMAP</small><em>09</em></span><span class="matrix-spine">SHORT CABLE ROADMAP · 09</span></span>
+            </button>
+            <button class="matrix-record matrix-amber" data-matrix-card data-matrix-index="9" data-project="ebike" aria-label="打开 ADO E-bike 欧洲上市项目">
+              <span class="matrix-book"><span class="matrix-pages" aria-hidden="true"></span><span class="matrix-sleeve"><img class="matrix-cover-image" src="./assets/orbit/ebike.png" alt="ADO E-bike 欧洲上市项目" /><span class="matrix-shade"></span><b>ADO E-bike 欧洲上市</b><small>GLOBAL LAUNCH · JULY 2026</small><em>10</em></span><span class="matrix-spine">E-BIKE EUROPE LAUNCH · 10</span></span>
+            </button>
+          </div>
+          <div class="record-matrix-control"><b data-matrix-current>01</b><span>/ 10</span><i></i><em>每 3 秒轮播 · 点击或拖动选择</em></div>
+        </div>
+      </section>
+
+      <section class="lifestyle section-shell" id="lifestyle">
+        <header class="section-head reveal">
+          <div><span class="section-no">04</span><span class="eyebrow">LIFESTYLE / BEYOND WORK</span></div>
+          <p>MY SYSTEM <span>MEETS THE NEXT BUILD</span></p>
+        </header>
+        <div class="finale-layout reveal">
+          <div class="operating-panel">
+            <div class="operating-panel-head">
+              <div><span class="eyebrow">MY OPERATING SYSTEM</span><h2>好奇是我的<br />默认设置。</h2></div>
+              <p>四种工作方式，持续构成我理解用户、拆解问题与推动产品落地的底层系统。</p>
+            </div>
+            <div class="operating-carousel" data-operating-carousel aria-label="工作方式自动轮播">
+              <div class="carousel-rail" aria-hidden="true"></div>
+              <article class="operating-slide record-cobalt" data-operating-slide>
+                <div class="operating-vinyl" aria-hidden="true"><i></i></div>
+                <div class="operating-cover"><img src="./assets/operating/hardware.png" alt="智能眼镜产品视觉" /><div class="operating-slide-shade"></div><span class="operating-slide-no">01</span><div class="operating-slide-copy"><small>HARDWARE / CRAFT</small><h3>硬件发烧友</h3><p>从结构、材料与工艺中理解产品取舍。</p></div></div>
+              </article>
+              <article class="operating-slide record-crimson" data-operating-slide>
+                <div class="operating-vinyl" aria-hidden="true"><i></i></div>
+                <div class="operating-cover"><img src="./assets/operating/collaboration.png" alt="多人协同创作场景" /><div class="operating-slide-shade"></div><span class="operating-slide-no">02</span><div class="operating-slide-copy"><small>TEAM / ALIGNMENT</small><h3>协作连接者</h3><p>把跨专业讨论转化为清晰目标与行动。</p></div></div>
+              </article>
+              <article class="operating-slide record-emerald" data-operating-slide>
+                <div class="operating-vinyl" aria-hidden="true"><i></i></div>
+                <div class="operating-cover"><img src="./assets/operating/empathy.png" alt="AI 陪伴机器人视觉" /><div class="operating-slide-shade"></div><span class="operating-slide-no">03</span><div class="operating-slide-copy"><small>VOC / EMPATHY</small><h3>敏锐洞察者</h3><p>在场景、行为与情绪中识别真实需求。</p></div></div>
+              </article>
+              <article class="operating-slide record-amber" data-operating-slide>
+                <div class="operating-vinyl" aria-hidden="true"><i></i></div>
+                <div class="operating-cover"><img src="./assets/operating/toolkit.png" alt="车载产品设计视觉" /><div class="operating-slide-shade"></div><span class="operating-slide-no">04</span><div class="operating-slide-copy"><small>CRAFT / TOOLKIT</small><h3>专业工具栈</h3><p>用研究、原型和数据连接想法与现实。</p></div></div>
+              </article>
+              <div class="operating-carousel-status"><b data-operating-current>01</b><span>/ 04</span><i></i><em>向下循环</em></div>
+            </div>
+          </div>
+          <aside class="finale-contact" id="contact">
+            <div class="footer-kicker"><span class="status-dot"></span> HAVE A PRODUCT WORTH BUILDING?</div>
+            <h2>一起把未来，<br /><em>做成日常。</em></h2>
+            <p class="finale-contact-lead">如果你也在寻找 AI、硬件与真实体验之间的下一种可能，我们可以从一次具体的问题开始。</p>
+            <div class="footer-contact">
+              <a href="tel:+8613270182993">开启一次对话 <span>↗</span></a>
+              <p>WeChat丨Phone：13270182993</p>
+            </div>
+            <div class="finale-coordinate"><span>BASED IN CHINA</span><span>31.2304° N · 121.4737° E</span></div>
+          </aside>
+        </div>
+        <div class="footer-bottom finale-bottom"><span>© 2026 YAN SHIRAN</span><span>产品经理</span><button data-jump="home">回到顶部 ↑</button></div>
+      </section>
+    </main>
+
+    <dialog class="pdf-viewer-dialog" aria-label="概念作品阅读器">
+      <header class="pdf-viewer-bar">
+        <div><span data-reader-kicker>CONCEPT PROJECT</span><b data-reader-title>Concept Project</b></div>
+        <button class="pdf-viewer-close" type="button" aria-label="关闭概念作品">×</button>
+      </header>
+      <div class="pdf-viewer-content" tabindex="0" aria-label="概念作品完整项目内容">
+        <div class="pdf-project-pages" data-reader-pages="death-experience" hidden>
+          <img src="./assets/concepts/a1-page.jpg" alt="Death Experience Space 项目页面 A1" />
+          <img src="./assets/concepts/a2-page.jpg" alt="Death Experience Space 项目页面 A2" />
+          <img src="./assets/concepts/a3-page.jpg" alt="Death Experience Space 项目页面 A3" />
+          <img src="./assets/concepts/a4-page.jpg" alt="Death Experience Space 项目页面 A4" />
+          <img src="./assets/concepts/a5-page.jpg" alt="Death Experience Space 项目页面 A5" />
+        </div>
+        <div class="pdf-project-pages" data-reader-pages="evil-chair" hidden>
+          <img src="./assets/concepts/b1-page.jpg" alt="Evil in the Chair 项目页面 B1" />
+          <img src="./assets/concepts/b2-page.jpg" alt="Evil in the Chair 项目页面 B2" />
+          <img src="./assets/concepts/b3-page.jpg" alt="Evil in the Chair 项目页面 B3" />
+          <img src="./assets/concepts/b4-page.jpg" alt="Evil in the Chair 项目页面 B4" />
+          <img src="./assets/concepts/b5-page.jpg" alt="Evil in the Chair 项目页面 B5" />
+        </div>
+        <div class="pdf-project-pages" data-reader-pages="emotional-harmonizer" hidden>
+          <img src="./assets/concepts/emotional-harmonizer-page-clean.jpg" alt="Emotional Harmonizer 完整项目页面" />
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="project-dialog">
+      <button class="dialog-close" aria-label="关闭">×</button>
+      <span class="dialog-index">PROJECT 01 / 04</span>
+      <h2></h2><p></p>
+      <div class="dialog-meta"><div><span>角色</span><b>产品定义 / 体验策略</b></div><div><span>方法</span><b>用户研究 / 原型验证</b></div></div>
+      <article class="ebike-case-study" hidden>
+        <div class="ebike-hero">
+          <img src="./assets/orbit/ebike.png" alt="ADO E-bike 产品系列" />
+          <div><span>EUROPE LAUNCH · JULY 2026</span><strong>5 款车型<br />成功上市</strong><p>从上市评审、跨国 Beta 测试到海外资产交付，完成产品质量与上市节奏的双重闭环。</p></div>
+        </div>
+        <section class="ebike-lineup" aria-label="上市车型矩阵">
+          <article><small>01 / FOLDABLE</small><img src="./assets/ebike/ado-air20pro.webp" alt="ADO Air 20 Pro 折叠电助力自行车" /><h3>Air 20 Pro</h3><p>21 kg 轻量折叠车，Bafang 自动变速、100 km 航程与碳带传动。</p></article>
+          <article><small>02 / COMMUTE</small><img src="./assets/ebike/ado-air20s.webp" alt="ADO Air 20S 城市电助力自行车" /><h3>Air 20S</h3><p>面向城市通勤与便携收纳的 20 英寸折叠产品。</p></article>
+          <article><small>03 / CITY</small><img src="./assets/ebike/ado-air28.webp" alt="ADO Air 28 城市电助力自行车" /><h3>Air 28</h3><p>28 英寸城市车型，21 kg 轻量车身与 350 W 助力系统。</p></article>
+          <article><small>04 / STEP-THROUGH</small><img src="./assets/ebike/ado-air-one-pro.webp" alt="ADO Air One Pro 低跨点电助力自行车" /><h3>Air One Pro</h3><p>低跨点车架与日常通勤定位，兼顾易骑性和场景扩展。</p></article>
+          <article><small>05 / AUTO SHIFT</small><img src="./assets/ebike/ado-air28pro.webp" alt="ADO Air 28 Pro 自动变速电助力自行车" /><h3>Air 28 Pro</h3><p>Bafang 自动变速与 40 Nm 高扭矩，覆盖更复杂城市路况。</p></article>
+        </section>
+        <div class="ebike-delivery-grid">
+          <section><span>01 / LAUNCH REVIEW</span><h3>进度统筹与上市评审</h3><p>统筹收集各部门交付进度并完成系统录入，主导制作上市文档与核实产品资料，确保项目顺利通过上市评审。</p></section>
+          <section><span>02 / BETA & QUALITY</span><h3>测试验收与质量攻坚</h3><p>跨国协调欧洲 Beta 测试排期并提前 1 周完成；国内亲自上路测试样车并发现 4 项产品问题，联合质量代表累计推动解决 10+ 项软硬件问题。</p></section>
+          <section><span>03 / GTM DELIVERY</span><h3>跨部门协同与上市闭环</h3><p>协同营销、售后及设计团队严谨核对产品参数，扫除海外物料筹备阻碍，保障全套资产按期交付。</p></section>
+        </div>
+        <p class="ebike-source">产品信息参考：<a href="https://ado.motorists.jp/ado_air20pro.html" target="_blank" rel="noreferrer">ADO Air 20 Pro</a><a href="https://ado.motorists.jp/" target="_blank" rel="noreferrer">ADO 产品系列</a></p>
+      </article>
+      <article class="anker-car-case-study" hidden>
+        <div class="anker-case-hero">
+          <div class="anker-product-stage"><img src="./assets/anker/b2216-main.jpg" alt="Anker Nano Wireless Charger with Car Charger 产品套装" /></div>
+          <div class="anker-case-intro"><span>GLOBAL LAUNCH · JULY 2025</span><strong>预计年销量<br />20 万台</strong><p>完成全球上市前竞争力测试、卖点与定价策略支持，推动产品成功覆盖亚马逊、官网及线下头部渠道。</p><div class="anker-role-strip"><b>Charging 部门 · 移动充电产品</b><em>车充产品 0.5—1 全球上市准备</em><em>数据驱动的 CABLE 产品规划</em></div></div>
+        </div>
+        <section class="anker-metrics" aria-label="项目核心成果">
+          <article><small>SCENARIO TEST</small><strong>327</strong><p>份有效场景测试样本</p></article>
+          <article><small>COMPETITIVENESS</small><strong>+25.3%</strong><p>核心竞争力较竞品提升</p></article>
+          <article><small>PSM PRICING</small><strong>$45.99</strong><p>定价锚点并通过上市评审</p></article>
+          <article><small>AFTER-SALES</small><strong>50%</strong><p>潜在售后问题提前拦截</p></article>
+        </section>
+        <div class="anker-feature-gallery" aria-label="Anker 车充产品功能展示">
+          <figure><img src="./assets/anker/b2216-feature-01.jpg" alt="Anker 车载无线充支架 15W Qi2 充电场景" /><figcaption>Qi2 · 最高 15W</figcaption></figure>
+          <figure><img src="./assets/anker/b2216-feature-02.jpg" alt="Anker 车载无线充支架着脱式使用场景" /><figcaption>着脱式充电板</figcaption></figure>
+          <figure><img src="./assets/anker/b2216-feature-03.jpg" alt="Anker 车载无线充支架角度调节展示" /><figcaption>360° 旋转 · 45° 调节</figcaption></figure>
+          <figure><img src="./assets/anker/b2216-feature-04.jpg" alt="Anker 车载无线充支架安装场景" /><figcaption>稳定安装 · 清晰指引</figcaption></figure>
+        </div>
+        <div class="anker-delivery-grid">
+          <section><span>01 / DATA DECISION</span><h3>数据决策</h3><p>独立设计场景化测试并获得 327 份有效样本，使核心竞争力较竞品提升 25.3%；利用 PSM 模型锚定 $45.99 定价，在毛利 25% 以内的目标约束下顺利通过上市前评审。</p></section>
+          <section><span>02 / CROSS-FUNCTION</span><h3>跨团队协同</h3><p>协同 IDC 与 BM 团队优化视觉及营销话术，将“360 度旋转”与“安装位置”核心卖点极致可视化；通过完善说明指引，提前拦截 50% 的潜在售后问题。</p></section>
+        </div>
+        <p class="anker-source">产品信息参考：<a href="https://www.ankerjapan.com/products/b2216" target="_blank" rel="noreferrer">Anker Japan 官方产品页</a><a href="https://www.amazon.co.jp/Anker-Detachable-Smartphone-Adjustable-Compatible/dp/B0F21ZHV2Q" target="_blank" rel="noreferrer">Amazon Japan 商品页</a></p>
+      </article>
+      <article class="anker-cable-case-study" hidden>
+        <div class="cable-case-hero">
+          <div class="cable-product-stage"><img src="./assets/orbit/anker-cable-lineup.png" alt="Anker 30cm、90cm 与 180cm 编织快充线产品组合" /></div>
+          <div class="cable-case-intro"><span>2026 PRODUCT ROADMAP</span><strong>预计 NPS<br />保持 40+</strong><p>从全球用户的收纳痛点出发，用定量、定性研究与 KANO 模型形成可执行的新品规划。</p><div class="cable-scenario-tags"><b>高价值场景</b><em>车内短距离充电</em><em>桌面设备连接</em><em>移动随身收纳</em></div></div>
+        </div>
+        <section class="cable-metrics" aria-label="短线项目研究规模">
+          <article><small>MARKETS</small><strong>4</strong><p>中国 / 美国 / 德国 / 英国</p></article>
+          <article><small>QUANTITATIVE</small><strong>3000+</strong><p>份全球定量调研样本</p></article>
+          <article><small>QUALITATIVE</small><strong>50+</strong><p>位国内定性访谈用户</p></article>
+          <article><small>KANO MODEL</small><strong>20</strong><p>项功能优先级量化评估</p></article>
+        </section>
+        <div class="cable-feature-gallery" aria-label="Anker 0.3 米短线产品展示">
+          <figure><img src="./assets/anker-cable/short-cable-main.jpg" alt="Anker A82E2 0.3 米 240W 双 Type-C 编织快充线" /><figcaption>A82E2 · 0.3m · 240W</figcaption></figure>
+          <figure><img src="./assets/anker-cable/short-cable-detail-01.jpg" alt="Anker 30cm、90cm 与 180cm 编织快充线长度组合" /><figcaption>长短有序 · 场景分层</figcaption></figure>
+          <figure><img src="./assets/anker-cable/short-cable-detail-02.jpg" alt="Anker 0.3 米短线随身连接手机使用场景" /><figcaption>边充边用 · 收纳轻盈</figcaption></figure>
+        </div>
+        <div class="cable-delivery-grid">
+          <section><span>01 / GLOBAL INSIGHT</span><h3>全球用户洞察</h3><p>独立负责中、美、德、英四国 3000+ 份定量调研及 50+ 人国内定性访谈；挖掘不同场景的收纳需求，并运用 KANO 模型量化评估 20 项功能优先级，精准识别高净值人群在车内、桌面等场景中的用线易缠绕痛点。</p></section>
+          <section><span>02 / PRODUCT ROADMAP</span><h3>产品定义与规划</h3><p>输出 Roadmap 并主导大盘及竞品分析，将研究证据转化为长度、功率、材质和收纳方式的产品决策，锁定 2026 年新品路标及产品上市排期。</p></section>
+        </div>
+        <p class="cable-source">产品示意参考：<a href="https://item.jd.com/100386334140.html" target="_blank" rel="noreferrer">Anker A82E2 0.3m 240W 短线</a><span>案例成果与研究数据来自个人项目经历</span></p>
+      </article>
+      <article class="tcl-aime-case-study" hidden>
+        <div class="aime-case-hero">
+          <div class="aime-product-stage">
+            <img src="./assets/orbit/tcl-ai.png" alt="TCL AiMe 第一代 AI 陪伴机器人" />
+            <div class="aime-sleep-orbit" aria-hidden="true"><i></i><i></i><i></i><b>AI</b></div>
+            <span>FIRST GENERATION REFERENCE</span>
+          </div>
+          <div class="aime-case-intro">
+            <span>TCL · AIME NEXT / SLEEP COMPANION</span>
+            <strong>从 AI 玩具<br />到睡眠陪伴</strong>
+            <p>参与 AiMe 新品迭代开发，抓住家长哄睡与儿童睡眠的核心需求，明确下一代产品的“AI 睡眠陪伴”定义。</p>
+            <div class="aime-role-strip"><b>机器人部门 · AI 产品经理</b><em>需求研究</em><em>竞品定位</em><em>主动式 AI 规划</em></div>
+          </div>
+        </div>
+        <section class="aime-metrics" aria-label="AiMe 睡眠陪伴项目研究规模">
+          <article><small>QUANTITATIVE</small><strong>500</strong><p>份家长与家庭定量问卷</p></article>
+          <article><small>QUALITATIVE</small><strong>30+</strong><p>场用户深度访谈</p></article>
+          <article><small>DUAL USER</small><strong>2</strong><p>类核心用户：家长 / 儿童</p></article>
+          <article><small>PRODUCT POSITION</small><strong>1</strong><p>条 AI 睡眠陪伴差异化定位</p></article>
+        </section>
+        <div class="aime-insight-grid">
+          <section><span>01 / PARENT</span><h3>家长的低效哄睡</h3><p>睡前陪伴耗时、重复安抚成本高，家长需要可持续又不过度打扰亲子关系的哄睡支持。</p></section>
+          <section><span>02 / CHILD</span><h3>儿童的睡前难安抚</h3><p>情绪波动、作息不稳定与过度兴奋共同延长入睡过程，需要更温和、连续的情绪承接。</p></section>
+        </div>
+        <div class="aime-sleep-loop" aria-label="AI 情感化睡眠干预流程">
+          <article><span>01</span><b>感知</b><p>结合情绪与作息线索，判断当前睡前状态。</p></article><i>→</i>
+          <article><span>02</span><b>问询</b><p>以主动但低打扰的方式确认儿童情绪与需求。</p></article><i>→</i>
+          <article><span>03</span><b>陪伴</b><p>匹配故事、声音与节奏，逐步降低睡前兴奋度。</p></article><i>→</i>
+          <article><span>04</span><b>反馈</b><p>沉淀作息与互动反馈，持续优化下一次陪伴。</p></article>
+        </div>
+        <div class="aime-delivery-grid">
+          <section><span>01 / USER RESEARCH</span><h3>需求调研</h3><p>通过 500 份问卷及 30+ 深度访谈，精准发现多个家长“低效哄睡”困扰与儿童“睡前难以安抚”问题，为产品定义提供数据支撑。</p></section>
+          <section><span>02 / COMPETITIVE POSITION</span><h3>竞品分析</h3><p>剖析主流儿童 AI 玩具，挖掘父母购买产品用于哄睡的真实需求，输出竞品报告，确立“AI 睡眠陪伴”的差异化定位。</p></section>
+          <section><span>03 / PROACTIVE AI</span><h3>AI 情感化睡眠规划</h3><p>规划睡眠主动 AI 干预方案，设计基于儿童情绪与作息的主动问询及睡眠哄睡机制，提升产品在睡前场景下的价值。</p></section>
+        </div>
+        <div class="aime-generation-note"><div><span>PRODUCT BOUNDARY</span><h3>第一代是产品参照，第二代是睡眠方向规划</h3></div><p>公开产品用于说明 AiMe 的产品形态与情感陪伴基础；本案例聚焦下一代睡眠场景的需求研究、差异化定位与主动式 AI 机制。</p></div>
+        <p class="aime-source">产品参照：<a href="https://item.jd.com/100298953301.html" target="_blank" rel="noreferrer">AiMe 第一代商品页</a><a href="https://www.tcl.com/cn/zh/tcl-design/tcl-design-works/tcl-ai-me-design-story" target="_blank" rel="noreferrer">TCL AiMe 官方设计故事</a><span>第二代睡眠方案与研究数据来自个人项目经历</span></p>
+      </article>
+      <article class="aiper-case-study" hidden>
+        <div class="aiper-case-hero">
+          <div class="aiper-product-stage"><img src="./assets/aiper/scuba-s3-hero.png" alt="Aiper Scuba S3 泳池机器人在水下执行清洁任务" /></div>
+          <div class="aiper-case-intro"><span>AIPER 元鼎 · POOL ROBOT</span><strong>识别准确率<br />提升 10%</strong><p>以海外 Beta 用户体验为核心，将水下清洁、视觉识别与 App 交互问题收敛为可落地的产品迭代方案。</p><div class="aiper-role-strip"><b>产品经理</b><em>海外 Beta 体验</em><em>用户问题收敛</em><em>新品竞品研究</em></div></div>
+        </div>
+        <section class="aiper-metrics" aria-label="Aiper 项目核心成果">
+          <article><small>UX ISSUES</small><strong>10+</strong><p>项用户体验痛点完成收敛</p></article>
+          <article><small>VISION DEFECTS</small><strong>5+</strong><p>项视觉识别缺陷定位与闭环</p></article>
+          <article><small>ACCURACY</small><strong>+10%</strong><p>视觉识别准确率提升</p></article>
+          <article><small>COMPETITORS</small><strong>10+</strong><p>款水质智能检测设备研究</p></article>
+        </section>
+        <div class="aiper-feature-gallery" aria-label="Aiper 智能泳池产品与庭院生态展示">
+          <figure class="is-wide"><img src="./assets/aiper/scuba-s3-battery.webp" alt="Aiper Scuba S3 泳池机器人续航与水下清洁场景" /><figcaption>Scuba S3 · 水下清洁体验</figcaption></figure>
+          <figure><img src="./assets/aiper/hydrocomm-hero.webp" alt="Aiper HydroComm 水质监测设备与手机应用" /><figcaption>HydroComm · 智能水质监测</figcaption></figure>
+          <figure><img src="./assets/aiper/hydrocomm-monitoring.webp" alt="Aiper HydroComm 监测 pH、ORP、EC、TDS 与温度" /><figcaption>5-in-1 · 水质指标体系</figcaption></figure>
+        </div>
+        <div class="aiper-delivery-grid">
+          <section><span>01 / BETA EXPERIENCE</span><h3>用户体验与产品迭代</h3><p>主导海外 Beta 内测体验，收敛 10+ 项用户体验痛点及 5+ 项视觉识别缺陷，推动使用交互优化，并将视觉识别准确率提升 10%。</p></section>
+          <section><span>02 / CATEGORY RESEARCH</span><h3>新品竞品研究</h3><p>调研 10+ 款泳池水质智能检测设备，系统梳理行业痛点、功能差异及用户需求，为产品迭代提供决策依据，并将产品机会延展至智能庭院新生态。</p></section>
+        </div>
+        <div class="aiper-ecosystem-callout"><div><span>FROM CLEANING TO POOL CARE</span><h3>从单次清洁，扩展到持续水质管理</h3></div><p>HydroComm 以 24/7 监测、pH / ORP / EC / TDS / 温度五项指标与 App 建议，将泳池机器人的单点体验连接为更完整的智能养护闭环。</p></div>
+        <p class="aiper-source">产品信息参考：<a href="https://aiper.com/us/aiper-scuba-s3" target="_blank" rel="noreferrer">Aiper Scuba S3 官方页</a><a href="https://www.amazon.com/S3-Waterline-Auto-Parking-Ultra-fine-Filtration/dp/B0H8CQ6964" target="_blank" rel="noreferrer">Amazon 商品页</a><a href="https://aiper.com/us/aiper-scuba-series/HydroComm" target="_blank" rel="noreferrer">Aiper HydroComm 官方页</a></p>
+      </article>
+      <article class="vivo-case-study" hidden>
+        <div class="vivo-case-hero">
+          <div class="vivo-product-stage"><img src="./assets/vivo/originos6-hd.jpg" alt="OriginOS 6 HD 自然流畅赢在全局" /></div>
+          <div class="vivo-case-intro"><span>VIVO · TABLET &amp; FOLDABLE OS</span><strong>60+ 项<br />质量闭环</strong><p>负责平板与折叠屏的软件功能规划与质量管理，把专业学习能力与生产力生态推进到可交付状态。</p><div class="vivo-role-strip"><b>大屏 OS 部门 · 软件产品经理</b><em>功能规划</em><em>生态拓展</em><em>上市质量管控</em></div></div>
+        </div>
+        <section class="vivo-metrics" aria-label="vivo 项目核心成果">
+          <article><small>COMPETITIVE STUDY</small><strong>3+</strong><p>款专业笔记产品深度剖析</p></article>
+          <article><small>LEARNING FEATURES</small><strong>2</strong><p>项无纸化学习核心能力落地</p></article>
+          <article><small>QUALITY LOOP</small><strong>60+</strong><p>项 Bug 与体验问题推动闭环</p></article>
+          <article><small>PRO ECOSYSTEM</small><strong>1</strong><p>项 PC 级 CAD 生态适配推进</p></article>
+        </section>
+        <div class="vivo-feature-gallery" aria-label="OriginOS 6 HD 专业生产力功能展示">
+          <figure class="is-wide"><a href="./assets/vivo/source/atomic-notes.pdf" target="_blank"><img src="./assets/vivo/atomic-notes.jpg" alt="原子笔记 PDF 课件标注与无界纸张功能" /></a><figcaption>原子笔记 · PDF 课件标注 / 无界纸张</figcaption></figure>
+          <figure><a href="./assets/vivo/source/handwriting-ai.pdf" target="_blank"><img src="./assets/vivo/handwriting-ai.jpg" alt="提笔忘字、汉字联想与英语助手功能" /></a><figcaption>手写辅助 · 学习体验补全</figcaption></figure>
+          <figure><a href="./assets/vivo/source/cad-adaptation.pdf" target="_blank"><img src="./assets/vivo/cad-adaptation.jpg" alt="PC 级中望 CAD 平板适配" /></a><figcaption>PC 级中望 CAD · 专业生态适配</figcaption></figure>
+          <figure><a href="./assets/vivo/source/multitasking.pdf" target="_blank"><img src="./assets/vivo/multitasking.jpg" alt="原子工作台与多任务窗口协同" /></a><figcaption>原子工作台 · 多任务流畅协同</figcaption></figure>
+          <figure><a href="./assets/vivo/source/creative-studio.pdf" target="_blank"><img src="./assets/vivo/creative-studio.jpg" alt="剪映专业版与中望 CAD 平板生产力生态" /></a><figcaption>随身工作室 · 创作与生产力</figcaption></figure>
+        </div>
+        <div class="vivo-delivery-grid">
+          <section><span>01 / ATOMIC NOTES</span><h3>原子笔记学习场景功能落地</h3><p>深度剖析 Notion、IMA、Goodnotes 等竞品，提炼专业笔记功能在创作流中的交互爽点并输出优化策略；精准洞察学生群体“无纸化学习”诉求，成功推动“PDF 课件标注”与“无界纸张”专业功能落地。</p></section>
+          <section><span>02 / ECOSYSTEM &amp; QUALITY</span><h3>生态拓展与 OS 质量管控</h3><p>推动 PC 版中望 CAD 移植至平板的后期开发进度，完善大屏专业生产力生态；全流程闭环管理 OriginOS 6 HD 上市质量，推动研发解决 60+ 项 Bug 与体验问题，确保按期交付。</p></section>
+        </div>
+        <p class="vivo-source">产品与功能参考：<a href="https://www.vivo.com.cn/vivo/vivopad6pro/" target="_blank" rel="noreferrer">vivo Pad6 Pro 官方页</a><a href="./assets/vivo/source/originos6-hd.pdf" target="_blank">OriginOS 6 HD 视觉</a><span>项目成果与交付数据来自个人经历</span></p>
+      </article>
+      <article class="vivo-aios-case-study" hidden>
+        <div class="aios-case-hero">
+          <div class="aios-product-stage"><img src="./assets/vivo-aios/foldable-overview.jpg" alt="折叠屏待办简报与 AI 快讯双屏工作界面" /></div>
+          <div class="aios-case-intro"><span>VIVO · PROACTIVE AIOS CONCEPT</span><strong>从应用切换<br />到主动服务</strong><p>针对商务人群高频工作场景，设计能够预测日程、聚合任务并生成每日简报的主动式 AIOS，降低跨应用点击、检索与切换成本。</p><div class="aios-role-strip"><b>折叠手机 AIOS 规划</b><em>场景拆解</em><em>信息架构</em><em>AI 交互定义</em><em>高保真原型</em></div></div>
+        </div>
+        <section class="aios-metrics" aria-label="折叠屏 AIOS 方案结构">
+          <article><small>UNIFIED HUB</small><strong>1</strong><p>个待办简报统一工作入口</p></article>
+          <article><small>INFORMATION VIEWS</small><strong>2</strong><p>种时间与类别组织方式</p></article>
+          <article><small>AI LOOP</small><strong>3</strong><p>步检索、推荐与行动闭环</p></article>
+          <article><small>TASK PATTERNS</small><strong>3</strong><p>类典型商务任务详情模板</p></article>
+        </section>
+        <div class="aios-problem-grid">
+          <section><span>01 / PROBLEM</span><h3>工作信息被拆散在不同应用里</h3><p>日历、电话、会议录音、邮件、文档、审批和差旅信息分别存在于多个入口。用户需要反复打开应用、还原上下文，再判断下一步行动。</p></section>
+          <section><span>02 / PRODUCT INTENT</span><h3>让系统主动整理“今天要完成什么”</h3><p>以时间、任务类型与用户习惯为线索，将跨应用信息收束为可执行的待办简报，并在关键节点主动提供资料、风险与建议。</p></section>
+        </div>
+        <div class="aios-feature-gallery" aria-label="折叠屏主动式 AIOS 原型展示">
+          <figure class="is-wide"><a href="./assets/vivo-aios/source/time-order.pdf" target="_blank"><img src="./assets/vivo-aios/time-order.jpg" alt="按时间顺序组织的待办简报与任务详情" /></a><figcaption>时间顺序 · 单条简报 / 决策卡片 / 反馈</figcaption></figure>
+          <figure><a href="./assets/vivo-aios/source/category-order.pdf" target="_blank"><img src="./assets/vivo-aios/category-order.jpg" alt="按紧急、日常与出差类别组织任务" /></a><figcaption>类别顺序 · 核心任务置顶</figcaption></figure>
+          <figure><a href="./assets/vivo-aios/source/task-detail.pdf" target="_blank"><img src="./assets/vivo-aios/task-detail.jpg" alt="UI 审核、周报与值机任务的差异化详情" /></a><figcaption>任务详情 · 内容随任务类型变化</figcaption></figure>
+          <figure><a href="./assets/vivo-aios/source/ai-retrieval.pdf" target="_blank"><img src="./assets/vivo-aios/ai-retrieval.jpg" alt="AI 调取邮件、合同与历史数据辅助决策" /></a><figcaption>AI 检索 · 调取知识库与历史上下文</figcaption></figure>
+          <figure><a href="./assets/vivo-aios/source/ai-recommendation.pdf" target="_blank"><img src="./assets/vivo-aios/ai-recommendation.jpg" alt="基于日程时间点主动推荐行业内容" /></a><figcaption>AI 推荐 · 在合适时间提供相关内容</figcaption></figure>
+          <figure><a href="./assets/vivo-aios/source/prototype.pdf" target="_blank"><img src="./assets/vivo-aios/prototype.jpg" alt="主动式 AIOS 信息中枢早期原型" /></a><figcaption>高保真原型 · 折叠双屏信息中枢</figcaption></figure>
+        </div>
+        <div class="aios-flow" aria-label="主动式 AIOS 工作流程">
+          <article><span>01</span><b>预测</b><p>读取日程、任务与上下文，识别即将发生的工作节点。</p></article>
+          <i>→</i>
+          <article><span>02</span><b>聚合</b><p>把邮件、文档、录音、审批与差旅信息组织成任务简报。</p></article>
+          <i>→</i>
+          <article><span>03</span><b>辅助</b><p>调用知识库检索历史信息，生成风险提示与下一步建议。</p></article>
+          <i>→</i>
+          <article><span>04</span><b>学习</b><p>通过结果反馈持续调整排序、内容密度与推荐时机。</p></article>
+        </div>
+        <div class="aios-context-map"><div><span>SCENARIO COVERAGE</span><h3>从晨间复盘到会议决策、深度办公与差旅安排</h3><p>围绕商务用户一天的工作节奏，将高频任务、使用应用与系统可主动提供的能力映射到时间轴中。</p></div><a href="./assets/vivo-aios/source/time-content-map.pdf" target="_blank"><img src="./assets/vivo-aios/time-content-map.jpg" alt="商务用户一天的时间、任务与应用映射" /></a></div>
+        <p class="aios-source">方案原型：<a href="./assets/vivo-aios/source/foldable-overview.pdf" target="_blank">折叠屏总览</a><a href="./assets/vivo-aios/source/time-order.pdf" target="_blank">时间顺序</a><a href="./assets/vivo-aios/source/category-order.pdf" target="_blank">类别顺序</a><span>本项目为主动式 AIOS 产品规划与交互概念</span></p>
+      </article>
+    </dialog>
+    <dialog class="case-media-dialog" aria-label="项目图片站内预览">
+      <header class="case-media-bar">
+        <button class="case-media-back" type="button" aria-label="返回项目展开内容"><span>←</span> 返回项目</button>
+        <div><span>PROJECT IMAGE</span><b data-case-media-title>项目图片</b></div>
+        <button class="case-media-close" type="button" aria-label="关闭图片预览">×</button>
+      </header>
+      <div class="case-media-stage" tabindex="0">
+        <img src="" alt="" data-case-media-image />
+      </div>
+    </dialog>
+    <div class="toast" role="status"></div>
+    <div class="compass-cursor" aria-hidden="true"><i></i></div>
+    <script src="./script.js?v=aime-sleep-case-89"></script>
+  </body>
+</html>

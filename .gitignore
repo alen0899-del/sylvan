@@ -1,0 +1,8 @@
+.DS_Store
+.vercel/
+.agents/
+.codex/
+SystemPulse/
+tmp/
+*.log
+
