@@ -2145,3 +2145,93 @@ body.case-media-open .compass-cursor{display:none!important}
 @media(prefers-reduced-motion:reduce){
   .experience-tab-rail::after,.career-ambient i,.experience-workspace-panel .experience-detail-lead,.experience-workspace-panel .experience-project{animation:none!important;transition:none!important}
 }
+
+/* 91 · Career OS stability pass
+   Keep the workspace calm while the content cards carry the entrance motion.
+   The previous panel-level translate/scale caused the whole grid to drift,
+   which made long copy overlap during a tab change on slower GPUs. */
+body.intro-transitioning .site-header,
+body.home-locked .site-header,
+body.profile-entry-pending .site-header{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  translate:0 -14px!important;
+  filter:blur(6px)!important;
+  animation:none!important;
+}
+.experience-workspace::after,
+.experience-workspace.is-switching::after{
+  content:none!important;
+  display:none!important;
+  animation:none!important;
+}
+.experience-workspace-panel,
+.experience-workspace-panel.is-active,
+.experience-workspace-panel.is-exiting,
+.experience-workspace.is-enter-left .experience-workspace-panel.is-active,
+.experience-workspace.is-enter-right .experience-workspace-panel.is-active{
+  width:100%!important;
+  max-width:100%!important;
+  transform:none!important;
+  transition:opacity .18s ease!important;
+}
+.experience-workspace-panel .experience-detail-inner,
+.experience-workspace-panel.is-active .experience-detail-inner{
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  overflow:visible!important;
+  grid-template-columns:minmax(190px,220px) minmax(0,1fr);
+  gap:16px;
+}
+.experience-detail-lead,
+.experience-projects,
+.experience-project,
+.experience-project > *,
+.experience-detail-inner > *{min-width:0}
+.experience-detail-lead p,
+.experience-points span,
+.experience-result span{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+.experience-project-media{height:clamp(142px,10.5vw,188px)!important}
+.experience-project-gallery img{height:clamp(98px,7.2vw,122px)!important}
+.experience-workspace.is-enter-right .experience-workspace-panel.is-active .experience-detail-lead,
+.experience-workspace.is-enter-left .experience-workspace-panel.is-active .experience-detail-lead,
+.experience-workspace.is-enter-right .experience-workspace-panel.is-active .experience-project,
+.experience-workspace.is-enter-left .experience-workspace-panel.is-active .experience-project{
+  will-change:opacity,transform;
+}
+@keyframes careerSurfaceInRight{
+  0%{opacity:0;transform:translate3d(26px,5px,0) scale(.992)}
+  68%{opacity:1;transform:translate3d(-2px,0,0) scale(1)}
+  100%{opacity:1;transform:none}
+}
+@keyframes careerSurfaceInLeft{
+  0%{opacity:0;transform:translate3d(-26px,5px,0) scale(.992)}
+  68%{opacity:1;transform:translate3d(2px,0,0) scale(1)}
+  100%{opacity:1;transform:none}
+}
+@media(max-width:900px){
+  .experience-workspace-panel,
+  .experience-workspace-panel.is-active,
+  .experience-workspace-panel.is-exiting,
+  .experience-workspace.is-enter-left .experience-workspace-panel.is-active,
+  .experience-workspace.is-enter-right .experience-workspace-panel.is-active{
+    transform:none!important;
+    transition:none!important;
+  }
+  .experience-workspace-panel .experience-detail-inner,
+  .experience-workspace-panel.is-active .experience-detail-inner{
+    grid-template-columns:1fr!important;
+    padding:52px 10px 10px!important;
+  }
+  .experience-project-media{height:170px!important}
+  .experience-project-gallery img{height:105px!important}
+}
+@media(max-width:560px){
+  .experience-project-media{height:160px!important}
+  .experience-project-gallery img{height:118px!important}
+}
