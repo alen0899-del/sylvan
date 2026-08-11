@@ -987,9 +987,9 @@ const orbitProjects = [
     image: "./assets/orbit/tcl-ai.png", alt: "TCL AiMe 睡眠陪伴机器人视觉", role: "AI 产品经理 / 新品迭代", method: "定量调研 / 深度访谈 / 主动式 AI 规划", caseStudy: "tcl-aime"
   },
   {
-    year: "2026", tag: "空间计算", type: "概念探索", title: "AI 智能眼镜交互",
-    description: "研究第一视角下的轻量信息呈现与无手交互，平衡即时帮助、注意力负担与隐私边界。",
-    image: "./assets/orbit/ai-glasses.png", alt: "AI 智能眼镜交互视觉", role: "概念产品 / 用户体验", method: "交互原型 / 使用情境"
+    year: "2026", tag: "智能穿戴", type: "产品创新", title: "新一代智能音频眼镜",
+    description: "聚焦中年男性商务差旅场景，提出镜架与镜腿分离的模块化方案，推进 ID、声学、BOM、供应链定点与产品立项。",
+    image: "./assets/orbit/ai-glasses.png", alt: "新一代智能音频眼镜产品视觉", role: "硬件产品经理 / 全流程推进", method: "产品定义 / 声学评估 / 供应链整合"
   },
   {
     year: "2025", tag: "泳池机器人", type: "产品迭代", title: "Aiper 泳池机器人",
