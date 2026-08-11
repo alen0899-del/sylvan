@@ -701,6 +701,8 @@ if (!reduceSceneMotion) {
 const experienceRows = $$("[data-experience]");
 const careerExperienceStack = $(".experience-stack");
 const careerStates = ["BUILDING", "DEFINING", "SYSTEMIZING", "SCALING"];
+const careerProjectCounts = [2, 1, 3, 2];
+const careerCoreSignals = ["上市交付", "情感化 AI", "系统质量", "全球产品"];
 
 if (careerExperienceStack && experienceRows.length) {
   const tabRail = document.createElement("div");
@@ -718,11 +720,15 @@ if (careerExperienceStack && experienceRows.length) {
   workspaceAmbient.className = "career-ambient";
   workspaceAmbient.setAttribute("aria-hidden", "true");
   workspaceAmbient.innerHTML = "<i></i><i></i><i></i>";
-  workspace.append(workspaceChrome, workspaceAmbient);
+  const scanLine = document.createElement("i");
+  scanLine.className = "career-scan-line";
+  scanLine.setAttribute("aria-hidden", "true");
+  workspace.append(workspaceChrome, workspaceAmbient, scanLine);
 
   const tabs = [];
   const panels = [];
   let activeExperience = 0;
+  const visitedExperiences = new Set([0]);
   let experienceSwitchTimer = 0;
   const careerCurrent = $("[data-career-current]", workspaceChrome);
   const syncTabIndicator = (index = activeExperience) => {
@@ -740,12 +746,16 @@ if (careerExperienceStack && experienceRows.length) {
     const status = document.createElement("span");
     status.className = "experience-tab-state";
     status.textContent = careerStates[index];
+    const preview = document.createElement("small");
+    preview.className = "experience-tab-preview";
+    preview.textContent = `${careerProjectCounts[index] || 1} PROJECT${careerProjectCounts[index] === 1 ? "" : "S"} · ${careerCoreSignals[index] || "产品交付"}`;
+    preview.setAttribute("aria-hidden", "true");
     summary.classList.add("experience-tab");
     summary.setAttribute("role", "tab");
     summary.setAttribute("aria-selected", String(index === 0));
     summary.setAttribute("aria-controls", detail.id);
     summary.setAttribute("tabindex", index === 0 ? "0" : "-1");
-    summary.append(status);
+    summary.append(status, preview);
     detail.classList.add("experience-workspace-panel");
     detail.setAttribute("role", "tabpanel");
     detail.dataset.experienceIndex = String(index);
@@ -764,14 +774,22 @@ if (careerExperienceStack && experienceRows.length) {
     if (nextIndex === activeExperience) return;
     const oldIndex = activeExperience;
     activeExperience = nextIndex;
+    visitedExperiences.add(nextIndex);
     clearTimeout(experienceSwitchTimer);
+    scanLine.classList.remove("is-running");
+    scanLine.dataset.direction = direction > 0 ? "right" : "left";
+    void scanLine.offsetWidth;
+    scanLine.classList.add("is-running");
     workspace.classList.remove("is-enter-left", "is-enter-right");
     workspace.classList.add(direction > 0 ? "is-enter-right" : "is-enter-left", "is-switching");
     tabs.forEach((tab, index) => {
       const active = index === nextIndex;
       tab.classList.toggle("is-active", active);
+      tab.classList.toggle("is-visited", visitedExperiences.has(index));
       tab.setAttribute("aria-selected", String(active));
       tab.setAttribute("tabindex", active ? "0" : "-1");
+      const state = $(".experience-tab-state", tab);
+      if (state) state.textContent = active ? careerStates[index] : visitedExperiences.has(index) ? "VIEWED" : careerStates[index];
     });
     panels.forEach((panel, index) => {
       const active = index === nextIndex;
@@ -789,6 +807,7 @@ if (careerExperienceStack && experienceRows.length) {
 
   tabs.forEach((tab, index) => {
     tab.classList.toggle("is-active", index === 0);
+    tab.classList.toggle("is-visited", index === 0);
     tab.addEventListener("click", () => activateExperience(index, index > activeExperience ? 1 : -1));
     tab.addEventListener("keydown", (event) => {
       if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
@@ -922,6 +941,22 @@ let matrixDragDistance = 0;
 let matrixDragStartedAt = 0;
 let matrixPressedCard = null;
 let matrixAutoplay = 0;
+let matrixReturnFocus = null;
+let matrixTransitioning = false;
+let matrixLastPointerActivatedAt = 0;
+
+const matrixPreviewData = [
+  { value: "以情绪安全为核心，完成一套可落地的沉浸式服务体验。", metrics: ["5 个章节", "3 类触点", "概念验证"], role: "概念项目 · 服务与产品设计" },
+  { value: "把电竞健康问题转化为可持续的训练与恢复体验。", metrics: ["4 类场景", "持续监测", "系统设计"], role: "概念项目 · 体验设计" },
+  { value: "从情绪识别到干预反馈，探索耳戴式设备的情感化交互。", metrics: ["10+ 痛点", "5+ 视觉缺陷", "体验迭代"], role: "概念项目 · 交互与服务" },
+  { value: "把复杂的学习工具变成更轻量、更连贯的大屏工作流。", metrics: ["PDF 标注", "无界纸张", "60+ 问题闭环"], role: "软件产品经理 · vivo OS" },
+  { value: "以海外 Beta 体验为入口，扩展泳池清洁到水质管理的庭院生态。", metrics: ["10+ 痛点", "10+ 竞品", "识别率 +10%"], role: "产品经理 · Aiper" },
+  { value: "面向商务工作流，降低折叠屏上的日程检索与应用切换成本。", metrics: ["主动预测", "智能简报", "高保真原型"], role: "AIOS 产品规划 · vivo" },
+  { value: "以数据和情绪洞察定义下一代 AI 睡眠陪伴体验。", metrics: ["500 份问卷", "30+ 访谈", "主动式 AI"], role: "AI 产品经理 · TCL AiMe" },
+  { value: "让车载无线充从全球上市前验证走向可量化的产品竞争力。", metrics: ["327 有效样本", "$45.99 定价", "上市覆盖"], role: "硬件产品经理 · Anker" },
+  { value: "从全球用户洞察出发，锁定 2026 收纳充电短线产品路标。", metrics: ["4 国调研", "3000+ 样本", "20 项优先级"], role: "Roadmap 负责人 · Anker" },
+  { value: "统筹五款车型完成欧洲上市，确保测试、质量与海外资产按期闭环。", metrics: ["5 款车型", "Beta 提前 1 周", "10+ 问题闭环"], role: "产品及项目交付 · HONOR" }
+];
 
 const renderRecordMatrix = () => {
   const total = matrixCards.length;
@@ -946,9 +981,39 @@ const renderRecordMatrix = () => {
 
 if (recordMatrix && matrixCards.length) {
   const stopMatrixAutoplay = () => clearInterval(matrixAutoplay);
+  const matrixPreview = document.createElement("aside");
+  matrixPreview.className = "matrix-preview";
+  matrixPreview.setAttribute("aria-live", "polite");
+  matrixPreview.innerHTML = `
+    <span class="matrix-preview-kicker" data-matrix-preview-kicker>ACTIVE PROJECT</span>
+    <h3 data-matrix-preview-title>Project</h3>
+    <p data-matrix-preview-value></p>
+    <div class="matrix-preview-metrics" data-matrix-preview-metrics></div>
+    <div class="matrix-preview-footer"><small data-matrix-preview-role></small><button type="button" class="matrix-preview-action" data-matrix-preview-open>VIEW CASE <span aria-hidden="true">↗</span></button></div>`;
+  recordMatrix.append(matrixPreview);
+  const syncMatrixPreview = () => {
+    const card = matrixCards[matrixActive];
+    const data = matrixPreviewData[matrixActive] || matrixPreviewData[0];
+    if (!card || !data) return;
+    const title = card.querySelector(".matrix-book-title,.matrix-sleeve b")?.textContent?.trim()
+      || card.querySelector("h3")?.textContent?.trim()
+      || card.dataset.readerTitle
+      || "Concept Project";
+    const kicker = card.dataset.pdf ? (card.dataset.readerKicker || "CONCEPT PROJECT") : "ACTIVE PROJECT";
+    $("[data-matrix-preview-kicker]", matrixPreview).textContent = kicker;
+    $("[data-matrix-preview-title]", matrixPreview).textContent = title;
+    $("[data-matrix-preview-value]", matrixPreview).textContent = data.value;
+    $("[data-matrix-preview-role]", matrixPreview).textContent = data.role;
+    $("[data-matrix-preview-metrics]", matrixPreview).innerHTML = data.metrics.map((metric) => `<span>${metric}</span>`).join("");
+    const action = $("[data-matrix-preview-open]", matrixPreview);
+    action.textContent = card.dataset.pdf ? "OPEN READER ↗" : "VIEW CASE ↗";
+    matrixPreview.classList.remove("is-changing");
+    requestAnimationFrame(() => matrixPreview.classList.add("is-changing"));
+  };
   const openConceptReader = (card) => {
     if (!card?.dataset.pdf || pdfViewerDialog.open) return;
     stopMatrixAutoplay();
+    matrixReturnFocus = card;
     const reader = card.dataset.reader;
     $$('[data-reader-pages]').forEach((pages) => {
       pages.hidden = pages.dataset.readerPages !== reader;
@@ -959,25 +1024,64 @@ if (recordMatrix && matrixCards.length) {
     document.body.classList.add('pdf-viewer-open');
     $('.pdf-viewer-content')?.scrollTo({ top: 0, behavior: 'auto' });
   };
+  const openMatrixCaseFromCard = (card) => {
+    if (!card || matrixTransitioning) return;
+    matrixTransitioning = true;
+    matrixReturnFocus = card;
+    stopMatrixAutoplay();
+    requestAnimationFrame(() => {
+      const rect = card.getBoundingClientRect();
+      const clone = card.cloneNode(true);
+      clone.classList.add("matrix-case-clone");
+      clone.setAttribute("aria-hidden", "true");
+      clone.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+      clone.style.setProperty("--clone-left", `${rect.left}px`);
+      clone.style.setProperty("--clone-top", `${rect.top}px`);
+      clone.style.setProperty("--clone-width", `${rect.width}px`);
+      clone.style.setProperty("--clone-height", `${rect.height}px`);
+      document.body.classList.add("matrix-case-opening");
+      document.body.append(clone);
+      requestAnimationFrame(() => clone.classList.add("is-opening"));
+      window.setTimeout(() => {
+        clone.remove();
+        document.body.classList.remove("matrix-case-opening");
+        matrixTransitioning = false;
+        if (card.dataset.pdf) {
+          openConceptReader(card);
+          return;
+        }
+        const linkedProject = card.dataset.project?.startsWith("orbit-")
+          ? Number(card.dataset.project.replace("orbit-", ""))
+          : orbitProjects.findIndex((project) => project.caseStudy === card.dataset.project);
+        if (linkedProject >= 0) {
+          orbitActive = linkedProject;
+          renderOrbit(orbitActive, true, "manual");
+          openOrbitProject();
+        }
+      }, 700);
+    });
+  };
   const activateMatrixCard = (card) => {
     if (!card) return;
     const pressedIndex = Number(card.dataset.matrixIndex || 0);
     if (card.dataset.project) {
       matrixActive = pressedIndex;
       renderRecordMatrix();
+      syncMatrixPreview();
       const linkedProject = card.dataset.project.startsWith('orbit-')
         ? Number(card.dataset.project.replace('orbit-', ''))
         : orbitProjects.findIndex((project) => project.caseStudy === card.dataset.project);
       if (linkedProject >= 0) {
         orbitActive = linkedProject;
         renderOrbit(orbitActive, true, "manual");
-        openOrbitProject();
+        openMatrixCaseFromCard(card);
       }
     } else if (pressedIndex !== matrixActive) {
       matrixActive = pressedIndex;
       renderRecordMatrix();
+      syncMatrixPreview();
     } else if (card.dataset.pdf) {
-      openConceptReader(card);
+      openMatrixCaseFromCard(card);
     }
   };
   const startMatrixAutoplay = () => {
@@ -988,9 +1092,12 @@ if (recordMatrix && matrixCards.length) {
       if (document.hidden || matrixDragging) return;
       matrixActive = (matrixActive + 1) % matrixCards.length;
       renderRecordMatrix();
+      syncMatrixPreview();
     }, 3000);
   };
   renderRecordMatrix();
+  syncMatrixPreview();
+  $("[data-matrix-preview-open]", matrixPreview).addEventListener("click", () => activateMatrixCard(matrixCards[matrixActive]));
   const finishMatrixDrag = (event, cancelled = false) => {
     if (!matrixDragging) return;
     matrixDragging = false;
@@ -1007,8 +1114,10 @@ if (recordMatrix && matrixCards.length) {
       const direction = matrixDragDistance < 0 ? 1 : -1;
       matrixActive = (matrixActive + direction * steps + matrixCards.length * 4) % matrixCards.length;
       renderRecordMatrix();
+      syncMatrixPreview();
     } else if (!cancelled && matrixPressedCard) {
       activateMatrixCard(matrixPressedCard);
+      matrixLastPointerActivatedAt = performance.now();
     }
     matrixDragDistance = 0;
     matrixPressedCard = null;
@@ -1035,6 +1144,7 @@ if (recordMatrix && matrixCards.length) {
   });
   recordMatrix.addEventListener('pointerup', (event) => {
     finishMatrixDrag(event);
+    syncMatrixPreview();
     if (!pdfViewerDialog?.open) startMatrixAutoplay();
   });
   recordMatrix.addEventListener('pointercancel', (event) => { finishMatrixDrag(event, true); startMatrixAutoplay(); });
@@ -1042,6 +1152,11 @@ if (recordMatrix && matrixCards.length) {
   matrixCards.forEach((card) => card.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     event.preventDefault();
+    stopMatrixAutoplay();
+    activateMatrixCard(card);
+  }));
+  matrixCards.forEach((card) => card.addEventListener('click', () => {
+    if (performance.now() - matrixLastPointerActivatedAt < 350) return;
     stopMatrixAutoplay();
     activateMatrixCard(card);
   }));
@@ -1064,6 +1179,7 @@ if (recordMatrix && matrixCards.length) {
   $$('a[href="#work"]').forEach((link) => link.addEventListener('click', () => {
     matrixActive = 0;
     renderRecordMatrix();
+    syncMatrixPreview();
     stopMatrixAutoplay();
     // Give the first project a clear reading window before the 3 s cycle begins.
     setTimeout(startMatrixAutoplay, 6000);
@@ -1119,6 +1235,17 @@ const orbitCopy = $(".orbit-project-copy");
 const orbitFocus = $(".orbit-focus-card");
 const orbitThumbs = $$(".orbit-thumb");
 const reduceOrbitMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const orbitVisited = new Set([0]);
+const orbitProofs = [
+  ["60+", "质量问题闭环", "OriginOS 6 HD"],
+  ["500", "份定量问卷", "睡眠场景"],
+  ["30%+", "音质提升", "模块化架构"],
+  ["10+", "体验痛点", "庭院生态"],
+  ["327", "有效样本", "$45.99 定价"],
+  ["4 国", "全球洞察", "2026 Roadmap"],
+  ["主动式", "AIOS 方案", "商务工作流"],
+  ["5 款", "欧洲上市", "10+ 问题闭环"]
+];
 const orbitMotionProfiles = [
   { hold: 3200, duration: 1.35 },
   { hold: 1550, duration: .62 },
@@ -1137,6 +1264,7 @@ function positionOrbitThumbs() {
   orbitThumbs.forEach((thumb, index) => {
     const isActive = index === orbitActive;
     thumb.classList.toggle("is-active", isActive);
+    thumb.dataset.visited = String(orbitVisited.has(index));
     if (isActive) {
       thumb.style.left = "50%";
       thumb.style.top = "50%";
@@ -1170,6 +1298,7 @@ function renderOrbit(index, immediate = false, source = "manual") {
   clearTimeout(orbitTransitionTimer);
   if (source === "manual") orbitVisual.style.setProperty("--orbit-duration", ".82s");
   orbitActive = (index + orbitProjects.length) % orbitProjects.length;
+  orbitVisited.add(orbitActive);
   const project = orbitProjects[orbitActive];
   positionOrbitThumbs();
   orbitCopy.classList.add("is-changing");
@@ -1181,6 +1310,15 @@ function renderOrbit(index, immediate = false, source = "manual") {
     $(".orbit-project-meta span:last-child").textContent = project.type;
     $(".orbit-project-copy h2").textContent = project.title;
     $(".orbit-project-copy p").textContent = project.description;
+    let proof = $(".orbit-proof");
+    if (!proof) {
+      proof = document.createElement("div");
+      proof.className = "orbit-proof";
+      proof.setAttribute("aria-label", "项目证据");
+      orbitCopy.append(proof);
+    }
+    const proofItems = orbitProofs[orbitActive] || [];
+    proof.innerHTML = proofItems.map((item) => `<span><b>${item}</b><small>${item === proofItems[0] ? "RESULT" : "SIGNAL"}</small></span>`).join("");
     $(".orbit-project-count b").textContent = String(orbitActive + 1).padStart(2, "0");
     $(".orbit-progress-fill").style.width = `${(orbitActive / (orbitProjects.length - 1)) * 100}%`;
     $(".orbit-focus-card img").src = project.image;
@@ -1195,6 +1333,7 @@ function renderOrbit(index, immediate = false, source = "manual") {
   immediate ? update() : orbitTransitionTimer = setTimeout(update, source === "auto" ? 150 : 180);
   $$(".orbit-time-marker").forEach((marker) => {
     marker.classList.toggle("is-active", Number(marker.dataset.orbitTime) === orbitActive);
+    marker.dataset.visited = String(orbitVisited.has(Number(marker.dataset.orbitTime)));
   });
 }
 
@@ -1255,8 +1394,28 @@ orbitVisual.addEventListener("pointerenter", (event) => {
 orbitVisual.addEventListener("pointerleave", (event) => {
   if (event.pointerType === "mouse") {
     orbitMouseInside = false;
+    orbitThumbs.forEach((thumb) => {
+      thumb.style.removeProperty("--orbit-hover-x");
+      thumb.style.removeProperty("--orbit-hover-y");
+    });
     scheduleOrbit();
   }
+});
+orbitVisual.addEventListener("pointermove", (event) => {
+  if (event.pointerType !== "mouse" || orbitDragging) return;
+  const thumb = event.target.closest?.(".orbit-thumb");
+  orbitThumbs.forEach((item) => {
+    if (item !== thumb) {
+      item.style.removeProperty("--orbit-hover-x");
+      item.style.removeProperty("--orbit-hover-y");
+    }
+  });
+  if (!thumb) return;
+  const rect = thumb.getBoundingClientRect();
+  const x = Math.max(-8, Math.min(8, (event.clientX - (rect.left + rect.width / 2)) * .08));
+  const y = Math.max(-8, Math.min(8, (event.clientY - (rect.top + rect.height / 2)) * .08));
+  thumb.style.setProperty("--orbit-hover-x", `${x}px`);
+  thumb.style.setProperty("--orbit-hover-y", `${y}px`);
 });
 orbitVisual.addEventListener("focusin", () => {
   orbitFocusInside = true;
@@ -1269,23 +1428,49 @@ orbitVisual.addEventListener("focusout", () => {
 document.addEventListener("visibilitychange", scheduleOrbit);
 
 let orbitDragStart = 0;
+let orbitDragLastX = 0;
+let orbitDragLastAt = 0;
+let orbitDragVelocity = 0;
 let orbitDragging = false;
 orbitVisual.addEventListener("pointerdown", (event) => {
   if (event.target.closest(".orbit-thumb")) return;
   orbitDragging = true;
   orbitDragStart = event.clientX;
+  orbitDragLastX = event.clientX;
+  orbitDragLastAt = performance.now();
+  orbitDragVelocity = 0;
   clearTimeout(orbitAutoTimer);
+  orbitVisual.classList.add("is-dragging");
   orbitVisual.setPointerCapture(event.pointerId);
+});
+orbitVisual.addEventListener("pointermove", (event) => {
+  if (!orbitDragging) return;
+  const now = performance.now();
+  const dt = Math.max(8, now - orbitDragLastAt);
+  orbitDragVelocity = (event.clientX - orbitDragLastX) / dt;
+  orbitDragLastX = event.clientX;
+  orbitDragLastAt = now;
+  const distance = event.clientX - orbitDragStart;
+  orbitVisual.style.setProperty("--orbit-drag-x", `${Math.max(-110, Math.min(110, distance * .55))}px`);
 });
 orbitVisual.addEventListener("pointerup", (event) => {
   if (!orbitDragging) return;
   const distance = event.clientX - orbitDragStart;
-  if (Math.abs(distance) > 38) selectOrbitProject(orbitActive + (distance < 0 ? 1 : -1));
+  const travel = Math.abs(distance);
+  const velocitySteps = Math.abs(orbitDragVelocity) > .75 ? 2 : Math.abs(orbitDragVelocity) > .38 ? 1 : 0;
+  const distanceSteps = Math.min(3, Math.floor(travel / 150));
+  const steps = Math.max(1, Math.min(4, distanceSteps + velocitySteps));
+  if (travel > 38) selectOrbitProject(orbitActive + (distance < 0 ? steps : -steps), true);
   else if (event.pointerType !== "mouse") scheduleOrbit();
+  orbitVisual.style.removeProperty("--orbit-drag-x");
+  orbitVisual.classList.remove("is-dragging");
+  if (orbitVisual.hasPointerCapture?.(event.pointerId)) orbitVisual.releasePointerCapture(event.pointerId);
   orbitDragging = false;
 });
 orbitVisual.addEventListener("pointercancel", () => {
   orbitDragging = false;
+  orbitVisual.style.removeProperty("--orbit-drag-x");
+  orbitVisual.classList.remove("is-dragging");
   scheduleOrbit();
 });
 
@@ -1293,12 +1478,16 @@ if (pdfViewerDialog) {
   const closePdfViewer = () => {
     pdfViewerDialog.close();
     document.body.classList.remove('pdf-viewer-open');
+    const returnTarget = matrixReturnFocus;
+    matrixReturnFocus = null;
+    returnTarget?.focus?.({ preventScroll: true });
     if (recordMatrix && matrixCards.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       clearInterval(matrixAutoplay);
       matrixAutoplay = setInterval(() => {
         if (document.hidden || matrixDragging) return;
         matrixActive = (matrixActive + 1) % matrixCards.length;
         renderRecordMatrix();
+        syncMatrixPreview();
       }, 3000);
     }
   };
@@ -1313,11 +1502,42 @@ if (pdfViewerDialog) {
 }
 
 const dialog = $(".project-dialog");
+let caseReaderChrome = null;
+let caseReaderProgress = null;
+const ensureCaseReaderChrome = () => {
+  if (caseReaderChrome || !dialog) return;
+  caseReaderChrome = document.createElement("div");
+  caseReaderChrome.className = "case-reader-chrome";
+  caseReaderChrome.innerHTML = `<div><span>CASE READER</span><b data-case-reader-progress>01 / 08</b></div><i><em></em></i><nav aria-label="案例导航"><button type="button" data-case-prev aria-label="上一个项目">←</button><button type="button" data-case-next aria-label="下一个项目">→</button></nav>`;
+  dialog.prepend(caseReaderChrome);
+  caseReaderProgress = $("[data-case-reader-progress]", caseReaderChrome);
+  $("[data-case-prev]", caseReaderChrome).addEventListener("click", () => {
+    orbitActive = (orbitActive - 1 + orbitProjects.length) % orbitProjects.length;
+    renderOrbit(orbitActive, true, "manual");
+    openOrbitProject();
+  });
+  $("[data-case-next]", caseReaderChrome).addEventListener("click", () => {
+    orbitActive = (orbitActive + 1) % orbitProjects.length;
+    renderOrbit(orbitActive, true, "manual");
+    openOrbitProject();
+  });
+  dialog.addEventListener("scroll", () => {
+    const maxScroll = Math.max(1, dialog.scrollHeight - dialog.clientHeight);
+    const ratio = Math.min(1, Math.max(0, dialog.scrollTop / maxScroll));
+    caseReaderChrome.style.setProperty("--case-reader-progress", ratio.toFixed(3));
+    caseReaderChrome.style.setProperty("--case-reader-progress-width", `${Math.round(ratio * 100)}%`);
+    if (caseReaderProgress) caseReaderProgress.textContent = `${String(orbitActive + 1).padStart(2, "0")} / 08 · ${Math.round(ratio * 100)}%`;
+  }, { passive: true });
+};
 const closeOrbitProject = () => {
   dialog.close();
   document.body.classList.remove("project-dialog-open");
+  const returnTarget = matrixReturnFocus;
+  matrixReturnFocus = null;
+  returnTarget?.focus?.({ preventScroll: true });
 };
 const openOrbitProject = () => {
+  ensureCaseReaderChrome();
   const project = orbitProjects[orbitActive];
   $(".dialog-index").textContent = `PROJECT ${String(orbitActive + 1).padStart(2,"0")} / 08`;
   $(".project-dialog h2").textContent = project.title;
@@ -1342,6 +1562,8 @@ const openOrbitProject = () => {
   dialog.classList.toggle("is-vivo-aios-case", project.caseStudy === "vivo-aios");
   dialog.showModal();
   document.body.classList.add("project-dialog-open");
+  dialog.scrollTo({ top: 0, behavior: "auto" });
+  if (caseReaderProgress) caseReaderProgress.textContent = `${String(orbitActive + 1).padStart(2, "0")} / 08 · 0%`;
 };
 $(".orbit-open-project").addEventListener("click", openOrbitProject);
 $$('[data-open-project]').forEach((trigger) => trigger.addEventListener("click", () => {
@@ -1359,6 +1581,20 @@ dialog.addEventListener("click", (e) => { if (e.target === dialog) closeOrbitPro
 dialog.addEventListener("cancel", (event) => {
   event.preventDefault();
   closeOrbitProject();
+});
+document.addEventListener("keydown", (event) => {
+  if (!dialog?.open || event.defaultPrevented) return;
+  if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    orbitActive = (orbitActive - 1 + orbitProjects.length) % orbitProjects.length;
+    renderOrbit(orbitActive, true, "manual");
+    openOrbitProject();
+  } else if (event.key === "ArrowRight") {
+    event.preventDefault();
+    orbitActive = (orbitActive + 1) % orbitProjects.length;
+    renderOrbit(orbitActive, true, "manual");
+    openOrbitProject();
+  }
 });
 
 const caseMediaDialog = $(".case-media-dialog");
