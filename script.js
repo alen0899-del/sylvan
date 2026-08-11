@@ -699,40 +699,110 @@ if (!reduceSceneMotion) {
 }
 
 const experienceRows = $$("[data-experience]");
-experienceRows.forEach((row) => {
-  const summary = $(".experience-summary", row);
-  const detail = $(".experience-detail", row);
-  detail.setAttribute("aria-hidden", "true");
+const careerExperienceStack = $(".experience-stack");
+const careerStates = ["BUILDING", "DEFINING", "SYSTEMIZING", "SCALING"];
 
-  summary.addEventListener("click", () => {
-    const willOpen = !row.classList.contains("is-open");
-    experienceRows.forEach((item) => {
-      item.classList.remove("is-open");
-      $(".experience-summary", item).setAttribute("aria-expanded", "false");
-      $(".experience-detail", item).setAttribute("aria-hidden", "true");
-    });
-    if (willOpen) {
-      row.classList.add("is-open");
-      summary.setAttribute("aria-expanded", "true");
-      detail.setAttribute("aria-hidden", "false");
+if (careerExperienceStack && experienceRows.length) {
+  const tabRail = document.createElement("div");
+  const workspace = document.createElement("div");
+  tabRail.className = "experience-tab-rail";
+  tabRail.setAttribute("role", "tablist");
+  tabRail.setAttribute("aria-label", "职业工作区");
+  workspace.className = "experience-workspace";
+  workspace.setAttribute("aria-live", "polite");
+
+  const tabs = [];
+  const panels = [];
+  let activeExperience = 0;
+  let experienceSwitchTimer = 0;
+  const syncWorkspaceHeight = (panel = panels[activeExperience]) => {
+    if (!panel || matchMedia("(max-width: 900px)").matches) {
+      workspace.style.removeProperty("height");
+      return;
     }
-  });
+    workspace.style.height = `${Math.max(620, panel.scrollHeight)}px`;
+  };
 
-  row.addEventListener("pointermove", (event) => {
-    if (event.pointerType !== "mouse") return;
-    const rect = row.getBoundingClientRect();
-    const localX = event.clientX - rect.left;
-    const localY = event.clientY - rect.top;
-    row.style.setProperty("--glow-x", `${localX}px`);
-    row.style.setProperty("--glow-y", `${localY}px`);
-    row.style.setProperty("--row-tilt-x", `${((localY / rect.height) - .5) * -1.2}deg`);
-    row.style.setProperty("--row-tilt-y", `${((localX / rect.width) - .5) * 1.5}deg`);
+  experienceRows.forEach((row, index) => {
+    const summary = $(".experience-summary", row);
+    const detail = $(".experience-detail", row);
+    const status = document.createElement("span");
+    status.className = "experience-tab-state";
+    status.textContent = careerStates[index];
+    summary.classList.add("experience-tab");
+    summary.setAttribute("role", "tab");
+    summary.setAttribute("aria-selected", String(index === 0));
+    summary.setAttribute("aria-controls", detail.id);
+    summary.setAttribute("tabindex", index === 0 ? "0" : "-1");
+    summary.append(status);
+    detail.classList.add("experience-workspace-panel");
+    detail.setAttribute("role", "tabpanel");
+    detail.dataset.experienceIndex = String(index);
+    summary.id = `career-tab-${index + 1}`;
+    detail.setAttribute("aria-labelledby", summary.id);
+    summary.dataset.experienceIndex = String(index);
+    tabRail.append(summary);
+    workspace.append(detail);
+    row.remove();
+    tabs.push(summary);
+    panels.push(detail);
   });
-  row.addEventListener("pointerleave", () => {
-    row.style.setProperty("--row-tilt-x", "0deg");
-    row.style.setProperty("--row-tilt-y", "0deg");
+  careerExperienceStack.append(tabRail, workspace);
+
+  const activateExperience = (nextIndex, direction = 1) => {
+    if (nextIndex === activeExperience) return;
+    const oldIndex = activeExperience;
+    activeExperience = nextIndex;
+    clearTimeout(experienceSwitchTimer);
+    workspace.classList.remove("is-enter-left", "is-enter-right");
+    workspace.classList.add(direction > 0 ? "is-enter-right" : "is-enter-left", "is-switching");
+    tabs.forEach((tab, index) => {
+      const active = index === nextIndex;
+      tab.classList.toggle("is-active", active);
+      tab.setAttribute("aria-selected", String(active));
+      tab.setAttribute("tabindex", active ? "0" : "-1");
+    });
+    panels.forEach((panel, index) => {
+      const active = index === nextIndex;
+      panel.classList.toggle("is-active", active);
+      panel.classList.toggle("is-exiting", index === oldIndex);
+      panel.setAttribute("aria-hidden", String(!active));
+    });
+    requestAnimationFrame(() => syncWorkspaceHeight(panels[nextIndex]));
+    requestAnimationFrame(() => workspace.classList.remove("is-switching"));
+    experienceSwitchTimer = window.setTimeout(() => {
+      panels.forEach((panel) => panel.classList.remove("is-exiting"));
+      workspace.classList.remove("is-enter-left", "is-enter-right");
+    }, 760);
+  };
+
+  tabs.forEach((tab, index) => {
+    tab.classList.toggle("is-active", index === 0);
+    tab.addEventListener("click", () => activateExperience(index, index > activeExperience ? 1 : -1));
+    tab.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      let next = index;
+      if (event.key === "ArrowLeft") next = (index - 1 + tabs.length) % tabs.length;
+      if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
+      if (event.key === "Home") next = 0;
+      if (event.key === "End") next = tabs.length - 1;
+      activateExperience(next, next > index ? 1 : -1);
+      tabs[next].focus({ preventScroll: true });
+    });
+    tab.addEventListener("pointermove", (event) => {
+      if (event.pointerType !== "mouse") return;
+      const rect = tab.getBoundingClientRect();
+      tab.style.setProperty("--tab-glow-x", `${event.clientX - rect.left}px`);
+      tab.style.setProperty("--tab-glow-y", `${event.clientY - rect.top}px`);
+    });
   });
-});
+  panels[0]?.classList.add("is-active");
+  panels.forEach((panel, index) => panel.setAttribute("aria-hidden", String(index !== 0)));
+  requestAnimationFrame(() => syncWorkspaceHeight());
+  new ResizeObserver(() => syncWorkspaceHeight()).observe(workspace);
+  addEventListener("resize", () => syncWorkspaceHeight(), { passive: true });
+}
 
 const operatingCarousel = $('[data-operating-carousel]');
 const operatingSlides = $$('[data-operating-slide]');
@@ -1229,6 +1299,7 @@ const openOrbitProject = () => {
   $(".project-dialog > p").textContent = project.description;
   $(".dialog-meta div:first-child b").textContent = project.role;
   $(".dialog-meta div:last-child b").textContent = project.method;
+  $(".glasses-case-study")?.toggleAttribute("hidden", !project.title.includes("智能音频眼镜"));
   $(".ebike-case-study")?.toggleAttribute("hidden", project.caseStudy !== "ebike");
   $(".anker-car-case-study")?.toggleAttribute("hidden", project.caseStudy !== "anker-car");
   $(".anker-cable-case-study")?.toggleAttribute("hidden", project.caseStudy !== "anker-short-cable");
@@ -1236,7 +1307,7 @@ const openOrbitProject = () => {
   $(".aiper-case-study")?.toggleAttribute("hidden", project.caseStudy !== "aiper-pool");
   $(".vivo-case-study")?.toggleAttribute("hidden", project.caseStudy !== "vivo-os");
   $(".vivo-aios-case-study")?.toggleAttribute("hidden", project.caseStudy !== "vivo-aios");
-  dialog.classList.toggle("is-detailed-case", Boolean(project.caseStudy));
+  dialog.classList.toggle("is-detailed-case", Boolean(project.caseStudy) || project.title.includes("智能音频眼镜"));
   dialog.classList.toggle("is-ebike-case", project.caseStudy === "ebike");
   dialog.classList.toggle("is-anker-case", project.caseStudy === "anker-car");
   dialog.classList.toggle("is-cable-case", project.caseStudy === "anker-short-cable");
@@ -1248,6 +1319,16 @@ const openOrbitProject = () => {
   document.body.classList.add("project-dialog-open");
 };
 $(".orbit-open-project").addEventListener("click", openOrbitProject);
+$$('[data-open-project]').forEach((trigger) => trigger.addEventListener("click", () => {
+  const reference = trigger.dataset.openProject;
+  const projectIndex = reference === "glasses"
+    ? orbitProjects.findIndex((project) => project.title.includes("智能音频眼镜"))
+    : orbitProjects.findIndex((project) => project.caseStudy === reference);
+  if (projectIndex < 0) return;
+  orbitActive = projectIndex;
+  renderOrbit(orbitActive, true, "manual");
+  openOrbitProject();
+}));
 $(".dialog-close").addEventListener("click", closeOrbitProject);
 dialog.addEventListener("click", (e) => { if (e.target === dialog) closeOrbitProject(); });
 dialog.addEventListener("cancel", (event) => {
