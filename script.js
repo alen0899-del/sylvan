@@ -711,16 +711,27 @@ if (careerExperienceStack && experienceRows.length) {
   workspace.className = "experience-workspace";
   workspace.setAttribute("aria-live", "polite");
 
+  const workspaceChrome = document.createElement("div");
+  const workspaceAmbient = document.createElement("div");
+  workspaceChrome.className = "career-workspace-chrome";
+  workspaceChrome.innerHTML = '<span>CAREER OS</span><div><b data-career-current>01</b><i></i><em>04</em></div>';
+  workspaceAmbient.className = "career-ambient";
+  workspaceAmbient.setAttribute("aria-hidden", "true");
+  workspaceAmbient.innerHTML = "<i></i><i></i><i></i>";
+  workspace.append(workspaceChrome, workspaceAmbient);
+
   const tabs = [];
   const panels = [];
   let activeExperience = 0;
   let experienceSwitchTimer = 0;
-  const syncWorkspaceHeight = (panel = panels[activeExperience]) => {
-    if (!panel || matchMedia("(max-width: 900px)").matches) {
-      workspace.style.removeProperty("height");
-      return;
-    }
-    workspace.style.height = `${Math.max(620, panel.scrollHeight)}px`;
+  const careerCurrent = $("[data-career-current]", workspaceChrome);
+  const syncTabIndicator = (index = activeExperience) => {
+    const tab = tabs[index];
+    if (!tab) return;
+    const railRect = tabRail.getBoundingClientRect();
+    const tabRect = tab.getBoundingClientRect();
+    tabRail.style.setProperty("--career-tab-x", `${tabRect.left - railRect.left}px`);
+    tabRail.style.setProperty("--career-tab-w", `${tabRect.width}px`);
   };
 
   experienceRows.forEach((row, index) => {
@@ -768,12 +779,12 @@ if (careerExperienceStack && experienceRows.length) {
       panel.classList.toggle("is-exiting", index === oldIndex);
       panel.setAttribute("aria-hidden", String(!active));
     });
-    requestAnimationFrame(() => syncWorkspaceHeight(panels[nextIndex]));
-    requestAnimationFrame(() => workspace.classList.remove("is-switching"));
+    if (careerCurrent) careerCurrent.textContent = String(nextIndex + 1).padStart(2, "0");
+    requestAnimationFrame(() => syncTabIndicator(nextIndex));
     experienceSwitchTimer = window.setTimeout(() => {
       panels.forEach((panel) => panel.classList.remove("is-exiting"));
-      workspace.classList.remove("is-enter-left", "is-enter-right");
-    }, 760);
+      workspace.classList.remove("is-enter-left", "is-enter-right", "is-switching");
+    }, 920);
   };
 
   tabs.forEach((tab, index) => {
@@ -796,12 +807,26 @@ if (careerExperienceStack && experienceRows.length) {
       tab.style.setProperty("--tab-glow-x", `${event.clientX - rect.left}px`);
       tab.style.setProperty("--tab-glow-y", `${event.clientY - rect.top}px`);
     });
+    tab.addEventListener("pointerleave", () => {
+      tab.style.setProperty("--tab-glow-x", "50%");
+      tab.style.setProperty("--tab-glow-y", "50%");
+    });
   });
   panels[0]?.classList.add("is-active");
   panels.forEach((panel, index) => panel.setAttribute("aria-hidden", String(index !== 0)));
-  requestAnimationFrame(() => syncWorkspaceHeight());
-  new ResizeObserver(() => syncWorkspaceHeight()).observe(workspace);
-  addEventListener("resize", () => syncWorkspaceHeight(), { passive: true });
+  requestAnimationFrame(() => syncTabIndicator());
+  addEventListener("resize", () => syncTabIndicator(), { passive: true });
+
+  $$(".experience-project", workspace).forEach((card) => {
+    card.addEventListener("pointermove", (event) => {
+      if (event.pointerType !== "mouse") return;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--project-light-x", `${event.clientX - rect.left}px`);
+      card.style.setProperty("--project-light-y", `${event.clientY - rect.top}px`);
+      card.classList.add("is-pointer-lit");
+    }, { passive: true });
+    card.addEventListener("pointerleave", () => card.classList.remove("is-pointer-lit"), { passive: true });
+  });
 }
 
 const operatingCarousel = $('[data-operating-carousel]');
