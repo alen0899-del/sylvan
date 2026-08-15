@@ -33,6 +33,7 @@
   let scrollResumeTimer = 0;
   let transientMotionActive = false;
   let runningFiniteAnimations = 0;
+  let runningTransitions = 0;
   const transientMotionSelector = [
     ".intro-transitioning",
     ".matrix-case-opening",
@@ -68,7 +69,7 @@
   const clearCanvas = () => context.clearRect(0, 0, width, height);
 
   const syncSuppressedState = () => {
-    const shouldSuppress = transientMotionActive || runningFiniteAnimations > 0;
+    const shouldSuppress = transientMotionActive || runningFiniteAnimations > 0 || runningTransitions > 0;
     if (backgroundSuppressed === shouldSuppress) return;
     backgroundSuppressed = shouldSuppress;
     document.body?.classList.toggle("dynamic-background-suppressed", backgroundSuppressed);
@@ -117,6 +118,20 @@
     const iterationCount = getComputedStyle(event.target).animationIterationCount;
     if (iterationCount.includes("infinite")) return;
     markFiniteAnimation(event.target, -1);
+  }, { passive: true });
+
+  const markTransition = (delta) => {
+    runningTransitions = Math.max(0, runningTransitions + delta);
+    syncSuppressedState();
+  };
+  document.addEventListener("transitionrun", (event) => {
+    if (!isBackgroundTarget(event.target)) markTransition(1);
+  }, { passive: true });
+  document.addEventListener("transitionend", (event) => {
+    if (!isBackgroundTarget(event.target)) markTransition(-1);
+  }, { passive: true });
+  document.addEventListener("transitioncancel", (event) => {
+    if (!isBackgroundTarget(event.target)) markTransition(-1);
   }, { passive: true });
 
   const motionObserver = new MutationObserver(syncTransientMotion);
