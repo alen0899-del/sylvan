@@ -23,6 +23,7 @@
   let latestPointerY = 0;
   let pointerReady = false;
   let activeCycle = -1;
+  const frameInterval = 42;
   let gridColumns = 0;
   let gridRows = 0;
   let grainMap = new Float32Array(0);
@@ -92,7 +93,7 @@
     width = Math.max(1, window.innerWidth);
     height = Math.max(1, window.innerHeight);
     pixelRatio = 1;
-    cellSize = clamp(Math.round(Math.min(width, height) / 88), 9, 14);
+    cellSize = clamp(Math.round(Math.min(width, height) / 76), 10, 15);
     canvas.width = Math.round(width * pixelRatio);
     canvas.height = Math.round(height * pixelRatio);
     canvas.style.width = `${width}px`;
@@ -148,8 +149,8 @@
     context.globalCompositeOperation = "lighter";
     context.globalAlpha = opacity;
     context.beginPath();
-    for (let index = 0; index <= 128; index += 1) {
-      const angle = (index / 128) * Math.PI * 2;
+    for (let index = 0; index <= 72; index += 1) {
+      const angle = (index / 72) * Math.PI * 2;
       const radius = ringRadius(angle, cycleAngle, baseRadius);
       const x = centerX + Math.cos(angle) * radius;
       const y = centerY + Math.sin(angle) * radius;
@@ -210,7 +211,7 @@
   };
 
   const paint = (timestamp, force = false) => {
-    if (!force && timestamp - lastPaint < 33) {
+    if (!force && timestamp - lastPaint < frameInterval) {
       frame = requestAnimationFrame(paint);
       return;
     }
