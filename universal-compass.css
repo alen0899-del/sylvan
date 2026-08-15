@@ -1,0 +1,52 @@
+.universal-compass-cursor{display:none}
+
+@media (pointer:fine){
+  html,body,body *{cursor:none!important}
+  .universal-compass-cursor{
+    position:fixed;
+    z-index:2147483647;
+    display:block;
+    left:var(--compass-x,50vw);
+    top:var(--compass-y,35vh);
+    width:30px;
+    height:30px;
+    translate:-50% -50%;
+    scale:.86;
+    rotate:-18deg;
+    pointer-events:none;
+    opacity:0;
+    border:1px solid rgba(226,239,255,.5);
+    border-radius:50%;
+    background:linear-gradient(145deg,rgba(247,251,255,.96),rgba(196,218,242,.8));
+    box-shadow:inset 0 1px rgba(255,255,255,.96),0 4px 12px rgba(2,10,24,.22),0 0 0 4px rgba(160,205,255,.06);
+    transition:opacity .2s ease,scale .25s cubic-bezier(.16,1,.3,1),rotate .35s cubic-bezier(.16,1,.3,1);
+  }
+  body.universal-pointer-active .universal-compass-cursor{opacity:1;scale:1}
+  .universal-compass-cursor::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:10px;
+    height:19px;
+    translate:-50% -50%;
+    clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+    background:linear-gradient(180deg,#ff725e 0 49%,#57718f 50% 100%);
+    box-shadow:0 1px 4px rgba(18,43,72,.24);
+  }
+  .universal-compass-cursor::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:4px;
+    height:4px;
+    translate:-50% -50%;
+    border-radius:50%;
+    background:#f8fbff;
+    box-shadow:0 0 0 1px rgba(53,77,105,.24);
+  }
+  .universal-compass-cursor i{position:absolute;inset:4px;border:1px solid rgba(75,105,137,.13);border-radius:50%}
+  .universal-compass-cursor.is-action{rotate:24deg;scale:1.12}
+  .universal-compass-cursor.is-pressed{scale:.82;transition-duration:.1s}
+}

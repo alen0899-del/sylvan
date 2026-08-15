@@ -14,6 +14,10 @@ let earthTransferActive = false;
 let earthRenderedTurn = 0;
 
 const reduceIntroMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const landingEntryTargetId = new URLSearchParams(location.search).get("from") === "landing"
+  ? location.hash.slice(1)
+  : "";
+const getEntryTarget = () => document.getElementById(landingEntryTargetId) || $("#profile");
 
 if (introWelcome) {
   const welcomeCharacters = [...introWelcome.textContent.trim()];
@@ -259,7 +263,7 @@ const runIntroParticleDissolve = () => {
   }, { once: true });
 };
 
-introGate.addEventListener("pointermove", (event) => {
+introGate?.addEventListener("pointermove", (event) => {
   if (introLeaving || event.pointerType !== "mouse") return;
   const x = (event.clientX / innerWidth - .5) * -12;
   const y = (event.clientY / innerHeight - .5) * -8;
@@ -267,7 +271,7 @@ introGate.addEventListener("pointermove", (event) => {
   introGate.style.setProperty("--intro-y", `${y}px`);
 });
 
-introEnter.addEventListener("click", () => {
+introEnter?.addEventListener("click", () => {
   if (introLeaving) return;
   introLeaving = true;
   const introStartedAt = performance.now();
@@ -395,6 +399,13 @@ introEnter.addEventListener("click", () => {
   transferFrame = requestAnimationFrame(animatePlanetOrbit);
 });
 
+/* The separate Wavy Cubes homepage is already the user's entrance action.
+   Continue straight into this site's original transition instead of asking
+   for a second click, while preserving the full animation. */
+if (new URLSearchParams(location.search).get("from") === "landing" && introEnter) {
+  requestAnimationFrame(() => requestAnimationFrame(() => introEnter.click()));
+}
+
 const magicGlassSelector = ".site-header,.section-head,.experience-row,.orbit-project-panel,.orbit-visual,.record-matrix,.operating-panel,.finale-contact";
 let magicPointerFrame = 0;
 let magicPointerX = innerWidth * .5;
@@ -446,37 +457,6 @@ window.addEventListener("blur", () => {
   magicPointerPanel?.classList.remove("is-pointer-lit");
   magicPointerPanel = null;
 });
-
-const orbitBodies = [
-  { element: $(".planet-orbit-a"), radiusX:.43, radiusY:.43, duration:30, phase:-2.25, direction:1, tilt:0 },
-  { element: $(".planet-orbit-b"), radiusX:.49, radiusY:.17, duration:46, phase:.1, direction:-1, tilt:-.08 },
-  { element: $(".planet-orbit-c"), radiusX:.16, radiusY:.5, duration:68, phase:2.2, direction:1, tilt:.31 }
-];
-const reduceHeroOrbitMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let heroOrbitVisible = true;
-const positionOrbitBodies = (time = 0) => {
-  const ambient = $(".hero-ambient");
-  const diameter = ambient?.clientWidth || 0;
-  orbitBodies.forEach(({ element, radiusX, radiusY, duration, phase, direction, tilt }) => {
-    if (!element || !diameter) return;
-    const angle = phase + direction * (time / 1000) * Math.PI * 2 / duration;
-    const rawX = Math.cos(angle) * radiusX * diameter;
-    const rawY = Math.sin(angle) * radiusY * diameter;
-    const x = rawX * Math.cos(tilt) - rawY * Math.sin(tilt);
-    const y = rawX * Math.sin(tilt) + rawY * Math.cos(tilt);
-    element.style.transform = `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0)`;
-    element.style.zIndex = Math.sin(angle) > 0 ? "6" : "1";
-  });
-  if (!reduceHeroOrbitMotion && heroOrbitVisible && !document.hidden) requestAnimationFrame(positionOrbitBodies);
-};
-positionOrbitBodies();
-const heroOrbitObserver = new IntersectionObserver(([entry]) => {
-  const wasVisible = heroOrbitVisible;
-  heroOrbitVisible = entry.isIntersecting;
-  if (heroOrbitVisible && !wasVisible && !reduceHeroOrbitMotion) requestAnimationFrame(positionOrbitBodies);
-}, { rootMargin: "10% 0px", threshold: 0 });
-const heroSectionForOrbit = $("#home");
-if (heroSectionForOrbit) heroOrbitObserver.observe(heroSectionForOrbit);
 
 if (false) { // Archived retro audio-player layer.
 const heroTonearmToggle = $('[data-hero-tonearm]');
@@ -617,7 +597,7 @@ $$("[data-jump]").forEach((button) => button.addEventListener("click", () => {
 const unlockHomeFromAtom = () => {
   if (sharedPlanet.classList.contains("is-vanishing")) return;
   if (!document.body.classList.contains("home-locked")) {
-    $("#profile")?.scrollIntoView({ behavior: reduceIntroMotion ? "auto" : "smooth", block: "start" });
+    getEntryTarget()?.scrollIntoView({ behavior: reduceIntroMotion ? "auto" : "smooth", block: "start" });
     return;
   }
   ["transform", "translate", "scale", "rotate"].forEach((prop) => sharedPlanet.style.removeProperty(prop));
@@ -629,7 +609,7 @@ const unlockHomeFromAtom = () => {
   setTimeout(() => {
     document.body.classList.remove("home-locked", "profile-entry-pending");
     document.body.classList.add("profile-collision-entry");
-    $("#profile")?.scrollIntoView({ behavior: reduceIntroMotion ? "auto" : "smooth", block: "start" });
+    getEntryTarget()?.scrollIntoView({ behavior: reduceIntroMotion ? "auto" : "smooth", block: "start" });
     setTimeout(() => {
       sharedPlanet.classList.remove("is-vanishing");
       sharedPlanet.classList.add("is-restoring");
@@ -666,7 +646,7 @@ const workSection = $("#work");
 const timelineSection = $("#timeline");
 const experienceStack = $(".experience-stack", profileSection);
 const experienceIntro = $(".experience-intro", profileSection);
-if (experienceStack && experienceIntro) experienceStack.after(experienceIntro);
+if (experienceStack && experienceIntro) experienceIntro.after(experienceStack);
 if (profileSection && workSection && timelineSection) {
   profileSection.after(workSection);
   workSection.after(timelineSection);
@@ -728,8 +708,8 @@ if (careerExperienceStack && experienceRows.length) {
   const tabs = [];
   const panels = [];
   let activeExperience = 0;
+  let experienceFadeTimer = 0;
   const visitedExperiences = new Set([0]);
-  let experienceSwitchTimer = 0;
   const careerCurrent = $("[data-career-current]", workspaceChrome);
   const syncTabIndicator = (index = activeExperience) => {
     const tab = tabs[index];
@@ -772,16 +752,11 @@ if (careerExperienceStack && experienceRows.length) {
 
   const activateExperience = (nextIndex, direction = 1) => {
     if (nextIndex === activeExperience) return;
-    const oldIndex = activeExperience;
     activeExperience = nextIndex;
     visitedExperiences.add(nextIndex);
-    clearTimeout(experienceSwitchTimer);
+    clearTimeout(experienceFadeTimer);
     scanLine.classList.remove("is-running");
-    scanLine.dataset.direction = direction > 0 ? "right" : "left";
-    void scanLine.offsetWidth;
-    scanLine.classList.add("is-running");
-    workspace.classList.remove("is-enter-left", "is-enter-right");
-    workspace.classList.add(direction > 0 ? "is-enter-right" : "is-enter-left", "is-switching");
+    workspace.classList.remove("is-enter-left", "is-enter-right", "is-switching");
     tabs.forEach((tab, index) => {
       const active = index === nextIndex;
       tab.classList.toggle("is-active", active);
@@ -794,15 +769,15 @@ if (careerExperienceStack && experienceRows.length) {
     panels.forEach((panel, index) => {
       const active = index === nextIndex;
       panel.classList.toggle("is-active", active);
-      panel.classList.toggle("is-exiting", index === oldIndex);
+      panel.classList.remove("is-exiting");
+      panel.classList.toggle("is-soft-entering", active);
       panel.setAttribute("aria-hidden", String(!active));
     });
     if (careerCurrent) careerCurrent.textContent = String(nextIndex + 1).padStart(2, "0");
     requestAnimationFrame(() => syncTabIndicator(nextIndex));
-    experienceSwitchTimer = window.setTimeout(() => {
-      panels.forEach((panel) => panel.classList.remove("is-exiting"));
-      workspace.classList.remove("is-enter-left", "is-enter-right", "is-switching");
-    }, 920);
+    experienceFadeTimer = window.setTimeout(() => {
+      panels[nextIndex]?.classList.remove("is-soft-entering");
+    }, 660);
   };
 
   tabs.forEach((tab, index) => {
@@ -941,6 +916,14 @@ let matrixDragDistance = 0;
 let matrixDragStartedAt = 0;
 let matrixPressedCard = null;
 let matrixAutoplay = 0;
+let matrixWheelDistance = 0;
+let matrixWheelEndTimer = 0;
+let matrixWheelReleaseTimer = 0;
+let matrixWheelSwitchTimer = 0;
+let matrixWheelLocked = false;
+let matrixWheelStartedAt = 0;
+let matrixWheelLastAt = 0;
+let matrixWheelPeakVelocity = 0;
 let matrixReturnFocus = null;
 let matrixTransitioning = false;
 let matrixLastPointerActivatedAt = 0;
@@ -981,6 +964,12 @@ const renderRecordMatrix = () => {
 
 if (recordMatrix && matrixCards.length) {
   const stopMatrixAutoplay = () => clearInterval(matrixAutoplay);
+  const moveMatrixBy = (steps) => {
+    if (!steps) return;
+    matrixActive = (matrixActive + steps + matrixCards.length * 4) % matrixCards.length;
+    renderRecordMatrix();
+    syncMatrixPreview();
+  };
   const matrixPreview = document.createElement("aside");
   matrixPreview.className = "matrix-preview";
   matrixPreview.setAttribute("aria-live", "polite");
@@ -1064,10 +1053,15 @@ if (recordMatrix && matrixCards.length) {
   const activateMatrixCard = (card) => {
     if (!card) return;
     const pressedIndex = Number(card.dataset.matrixIndex || 0);
-    if (card.dataset.project) {
+    // A first click on a side card slides it into focus. A second click on the
+    // focused card opens the project, keeping click and drag from competing.
+    if (pressedIndex !== matrixActive) {
       matrixActive = pressedIndex;
       renderRecordMatrix();
       syncMatrixPreview();
+      return;
+    }
+    if (card.dataset.project) {
       const linkedProject = card.dataset.project.startsWith('orbit-')
         ? Number(card.dataset.project.replace('orbit-', ''))
         : orbitProjects.findIndex((project) => project.caseStudy === card.dataset.project);
@@ -1076,10 +1070,6 @@ if (recordMatrix && matrixCards.length) {
         renderOrbit(orbitActive, true, "manual");
         openMatrixCaseFromCard(card);
       }
-    } else if (pressedIndex !== matrixActive) {
-      matrixActive = pressedIndex;
-      renderRecordMatrix();
-      syncMatrixPreview();
     } else if (card.dataset.pdf) {
       openMatrixCaseFromCard(card);
     }
@@ -1107,17 +1097,22 @@ if (recordMatrix && matrixCards.length) {
     const travel = Math.abs(matrixDragDistance);
     const elapsed = Math.max(60, performance.now() - matrixDragStartedAt);
     const velocity = travel / elapsed;
-    if (!cancelled && travel > 38) {
+    if (!cancelled && travel > 28) {
       const distanceSteps = Math.max(1, Math.floor(travel / 155));
       const velocitySteps = velocity > 1.75 ? 3 : velocity > 1.05 ? 2 : velocity > .58 ? 1 : 0;
       const steps = Math.min(4, distanceSteps + velocitySteps);
       const direction = matrixDragDistance < 0 ? 1 : -1;
-      matrixActive = (matrixActive + direction * steps + matrixCards.length * 4) % matrixCards.length;
-      renderRecordMatrix();
-      syncMatrixPreview();
+      moveMatrixBy(direction * steps);
     } else if (!cancelled && matrixPressedCard) {
       activateMatrixCard(matrixPressedCard);
       matrixLastPointerActivatedAt = performance.now();
+    } else if (!cancelled) {
+      const bounds = recordMatrix.getBoundingClientRect();
+      const offsetFromCenter = event.clientX - (bounds.left + bounds.width / 2);
+      if (Math.abs(offsetFromCenter) > Math.min(90, bounds.width * .1)) {
+        moveMatrixBy(offsetFromCenter > 0 ? 1 : -1);
+        matrixLastPointerActivatedAt = performance.now();
+      }
     }
     matrixDragDistance = 0;
     matrixPressedCard = null;
@@ -1126,6 +1121,7 @@ if (recordMatrix && matrixCards.length) {
   recordMatrix.addEventListener('dragstart', (event) => event.preventDefault());
   recordMatrix.addEventListener('pointerdown', (event) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
+    if (event.target.closest('.matrix-preview,.record-matrix-control')) return;
     event.preventDefault();
     matrixDragging = true;
     stopMatrixAutoplay();
@@ -1138,8 +1134,11 @@ if (recordMatrix && matrixCards.length) {
   });
   recordMatrix.addEventListener('pointermove', (event) => {
     if (!matrixDragging) return;
+    event.preventDefault();
     matrixDragDistance = event.clientX - matrixDragStartX;
-    const easedDistance = Math.max(-190, Math.min(190, matrixDragDistance * .72));
+    const dragSign = Math.sign(matrixDragDistance);
+    const dragMagnitude = Math.abs(matrixDragDistance);
+    const easedDistance = dragSign * Math.min(210, 210 * (1 - Math.exp(-dragMagnitude / 190)));
     recordMatrix.style.setProperty('--matrix-drag-x', `${easedDistance}px`);
   });
   recordMatrix.addEventListener('pointerup', (event) => {
@@ -1148,6 +1147,67 @@ if (recordMatrix && matrixCards.length) {
     if (!pdfViewerDialog?.open) startMatrixAutoplay();
   });
   recordMatrix.addEventListener('pointercancel', (event) => { finishMatrixDrag(event, true); startMatrixAutoplay(); });
+const finishMatrixWheel = () => {
+  matrixWheelEndTimer = 0;
+  const distance = Math.abs(matrixWheelDistance);
+  let steps = 0;
+  if (distance >= 18) {
+    const elapsed = Math.max(40, matrixWheelLastAt - matrixWheelStartedAt);
+    const averageVelocity = distance / elapsed;
+    const velocity = Math.max(averageVelocity, matrixWheelPeakVelocity);
+    steps = distance >= 190 || velocity >= 2.2
+      ? 3
+      : distance >= 82 || velocity >= .9
+        ? 2
+        : 1;
+  }
+  if (steps) {
+    matrixWheelLocked = true;
+    recordMatrix.classList.add('is-wheel-switching');
+    moveMatrixBy(matrixWheelDistance > 0 ? steps : -steps);
+  }
+  matrixWheelDistance = 0;
+  matrixWheelStartedAt = 0;
+  matrixWheelLastAt = 0;
+  matrixWheelPeakVelocity = 0;
+  clearTimeout(matrixWheelSwitchTimer);
+  matrixWheelSwitchTimer = window.setTimeout(() => {
+    recordMatrix.classList.remove('is-wheel-switching');
+    if (!pdfViewerDialog?.open && !recordMatrix.matches(':hover')) startMatrixAutoplay();
+  }, 1080);
+};
+recordMatrix.addEventListener('wheel', (event) => {
+    if (event.ctrlKey || event.metaKey || event.altKey || matrixCards.length < 2) return;
+    const horizontalDistance = Math.abs(event.deltaX);
+    const verticalDistance = Math.abs(event.deltaY);
+    // Vertical and diagonal-up/down gestures belong to normal page scrolling.
+    // The matrix only captures an intentional, predominantly horizontal swipe.
+    if (horizontalDistance < 1 || horizontalDistance <= verticalDistance * 1.12) return;
+    const rawDelta = event.deltaX;
+    const modeScale = event.deltaMode === 1 ? 18 : event.deltaMode === 2 ? 120 : 1;
+    const delta = Math.max(-90, Math.min(90, rawDelta * modeScale));
+    if (Math.abs(delta) < .5) return;
+
+  // Treat one two-finger gesture as one direct switch. Distance and speed
+  // decide whether it advances one, two, or three cards.
+  event.preventDefault();
+  stopMatrixAutoplay();
+  clearTimeout(matrixWheelReleaseTimer);
+  matrixWheelReleaseTimer = window.setTimeout(() => {
+    matrixWheelLocked = false;
+  }, 140);
+  if (matrixWheelLocked) return;
+  const now = performance.now();
+  if (!matrixWheelStartedAt) {
+    matrixWheelStartedAt = now;
+    clearTimeout(matrixWheelEndTimer);
+    matrixWheelEndTimer = window.setTimeout(finishMatrixWheel, 44);
+  }
+  const deltaTime = matrixWheelLastAt ? Math.max(8, now - matrixWheelLastAt) : 16;
+  matrixWheelPeakVelocity = Math.max(matrixWheelPeakVelocity, Math.abs(delta) / deltaTime);
+  matrixWheelLastAt = now;
+  matrixWheelDistance += delta;
+}, { passive: false });
   recordMatrix.addEventListener('mouseenter', stopMatrixAutoplay);
   matrixCards.forEach((card) => card.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
@@ -1510,6 +1570,9 @@ const ensureCaseReaderChrome = () => {
   caseReaderChrome.className = "case-reader-chrome";
   caseReaderChrome.innerHTML = `<div><span>CASE READER</span><b data-case-reader-progress>01 / 08</b></div><i><em></em></i><nav aria-label="案例导航"><button type="button" data-case-prev aria-label="上一个项目">←</button><button type="button" data-case-next aria-label="下一个项目">→</button></nav>`;
   dialog.prepend(caseReaderChrome);
+  const readerNav = $("nav", caseReaderChrome);
+  const closeButton = $(".dialog-close", dialog);
+  if (readerNav && closeButton) readerNav.append(closeButton);
   caseReaderProgress = $("[data-case-reader-progress]", caseReaderChrome);
   $("[data-case-prev]", caseReaderChrome).addEventListener("click", () => {
     orbitActive = (orbitActive - 1 + orbitProjects.length) % orbitProjects.length;
