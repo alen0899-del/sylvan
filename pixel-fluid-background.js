@@ -30,10 +30,12 @@
   let sparkleMap = new Float32Array(0);
   const animationStartedAt = performance.now();
   let backgroundSuppressed = false;
-  let scrollResumeTimer = 0;
   let motionResumeTimer = 0;
   let motionHoldUntil = 0;
   let transientMotionActive = false;
+  let isScrolling = false;
+  let scrollPerformanceTimer = 0;
+  const scrollFrameInterval = 54;
   const transientMotionSelector = [
     ".intro-transitioning",
     ".matrix-case-opening",
@@ -115,24 +117,20 @@
   const motionObserver = new MutationObserver(syncTransientMotion);
   motionObserver.observe(document.documentElement, { subtree: true, attributes: true, attributeFilter: ["class"] });
 
-  const suppressWhileScrolling = () => {
-    if (!document.body) return;
-    if (!transientMotionActive) {
-      transientMotionActive = true;
-      syncSuppressedState();
-    }
-    clearTimeout(scrollResumeTimer);
-    scrollResumeTimer = window.setTimeout(() => {
-      transientMotionActive = Boolean(document.querySelector(transientMotionSelector));
-      syncSuppressedState();
-    }, 140);
+  const markScrolling = () => {
+    isScrolling = true;
+    clearTimeout(scrollPerformanceTimer);
+    scrollPerformanceTimer = window.setTimeout(() => {
+      isScrolling = false;
+      scrollPerformanceTimer = 0;
+    }, 120);
   };
-  window.addEventListener("scroll", suppressWhileScrolling, { passive: true });
+  window.addEventListener("scroll", markScrolling, { passive: true });
   window.addEventListener("scrollend", () => {
-    clearTimeout(scrollResumeTimer);
-    scrollResumeTimer = window.setTimeout(() => {
-      transientMotionActive = Boolean(document.querySelector(transientMotionSelector));
-      syncSuppressedState();
+    clearTimeout(scrollPerformanceTimer);
+    scrollPerformanceTimer = window.setTimeout(() => {
+      isScrolling = false;
+      scrollPerformanceTimer = 0;
     }, 80);
   }, { passive: true });
 
@@ -312,7 +310,8 @@
       frame = 0;
       return;
     }
-    if (!force && timestamp - lastPaint < frameInterval) {
+    const activeFrameInterval = isScrolling ? scrollFrameInterval : frameInterval;
+    if (!force && timestamp - lastPaint < activeFrameInterval) {
       frame = requestAnimationFrame(paint);
       return;
     }
