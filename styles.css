@@ -2929,3 +2929,15 @@ main{position:relative;z-index:1;background:transparent!important}
 .fluid-gradient-background::after{z-index:3;opacity:.038;mix-blend-mode:soft-light}
 @media(max-width:700px){.pixel-fluid-canvas{opacity:.7}}
 @media(prefers-reduced-motion:reduce){.pixel-fluid-canvas{opacity:.7}}
+
+/* Pause only the animated background layer while the page is scrolling or a
+   finite content transition is playing. Static surfaces and page content stay
+   exactly where they are; the canvas is also cleared to avoid wasted paints. */
+body.dynamic-background-suppressed .pixel-fluid-canvas,
+body.dynamic-background-suppressed .gilded-aurora-layer{
+  opacity:0!important;
+  transition:opacity .14s ease!important;
+}
+body.dynamic-background-suppressed .gilded-aurora-ribbon{
+  animation-play-state:paused!important;
+}

@@ -29,6 +29,31 @@
   let grainMap = new Float32Array(0);
   let sparkleMap = new Float32Array(0);
   const animationStartedAt = performance.now();
+  let backgroundSuppressed = false;
+  let scrollResumeTimer = 0;
+  let transientMotionActive = false;
+  let runningFiniteAnimations = 0;
+  const transientMotionSelector = [
+    ".intro-transitioning",
+    ".matrix-case-opening",
+    ".experience-workspace.is-switching",
+    ".experience-workspace.is-enter-left",
+    ".experience-workspace.is-enter-right",
+    ".experience-workspace-panel.is-soft-entering",
+    ".career-scan-line.is-running",
+    ".record-matrix.is-wheel-switching",
+    ".record-matrix.is-dragging",
+    ".operating-carousel.is-dragging",
+    ".orbit-visual.is-dragging",
+    ".orbit-project-copy.is-changing",
+    ".orbit-focus-card.is-changing",
+    ".shared-planet.is-transferring",
+    ".shared-planet.is-receiving",
+    ".shared-planet.is-settling",
+    ".shared-planet.is-vanishing",
+    ".shared-planet.is-restoring",
+    ".hero-ambient.is-playing"
+  ].join(",");
 
   const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
   const smoothstep = (minimum, maximum, value) => {
@@ -39,6 +64,84 @@
     const value = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
     return value - Math.floor(value);
   };
+
+  const clearCanvas = () => context.clearRect(0, 0, width, height);
+
+  const syncSuppressedState = () => {
+    const shouldSuppress = transientMotionActive || runningFiniteAnimations > 0;
+    if (backgroundSuppressed === shouldSuppress) return;
+    backgroundSuppressed = shouldSuppress;
+    document.body?.classList.toggle("dynamic-background-suppressed", backgroundSuppressed);
+    cancelAnimationFrame(frame);
+    frame = 0;
+    if (backgroundSuppressed) {
+      clearCanvas();
+      return;
+    }
+    restart();
+  };
+
+  const syncTransientMotion = () => {
+    transientMotionActive = Boolean(document.querySelector(transientMotionSelector));
+    syncSuppressedState();
+  };
+
+  const animationCounts = new WeakMap();
+  const markFiniteAnimation = (target, delta) => {
+    if (!(target instanceof Element)) return;
+    const count = Math.max(0, (animationCounts.get(target) || 0) + delta);
+    if (count) animationCounts.set(target, count);
+    else animationCounts.delete(target);
+    runningFiniteAnimations = Math.max(0, runningFiniteAnimations + delta);
+    syncSuppressedState();
+  };
+
+  const isBackgroundTarget = (target) => target instanceof Element && (
+    target.closest(".fluid-gradient-background, .gilded-aurora-layer")
+  );
+
+  document.addEventListener("animationstart", (event) => {
+    if (isBackgroundTarget(event.target)) return;
+    const iterationCount = getComputedStyle(event.target).animationIterationCount;
+    if (iterationCount.includes("infinite")) return;
+    markFiniteAnimation(event.target, 1);
+  }, { passive: true });
+  document.addEventListener("animationend", (event) => {
+    if (isBackgroundTarget(event.target)) return;
+    const iterationCount = getComputedStyle(event.target).animationIterationCount;
+    if (iterationCount.includes("infinite")) return;
+    markFiniteAnimation(event.target, -1);
+  }, { passive: true });
+  document.addEventListener("animationcancel", (event) => {
+    if (isBackgroundTarget(event.target)) return;
+    const iterationCount = getComputedStyle(event.target).animationIterationCount;
+    if (iterationCount.includes("infinite")) return;
+    markFiniteAnimation(event.target, -1);
+  }, { passive: true });
+
+  const motionObserver = new MutationObserver(syncTransientMotion);
+  motionObserver.observe(document.documentElement, { subtree: true, attributes: true, attributeFilter: ["class"] });
+
+  const suppressWhileScrolling = () => {
+    if (!document.body) return;
+    if (!transientMotionActive) {
+      transientMotionActive = true;
+      syncSuppressedState();
+    }
+    clearTimeout(scrollResumeTimer);
+    scrollResumeTimer = window.setTimeout(() => {
+      transientMotionActive = Boolean(document.querySelector(transientMotionSelector));
+      syncSuppressedState();
+    }, 140);
+  };
+  window.addEventListener("scroll", suppressWhileScrolling, { passive: true });
+  window.addEventListener("scrollend", () => {
+    clearTimeout(scrollResumeTimer);
+    scrollResumeTimer = window.setTimeout(() => {
+      transientMotionActive = Boolean(document.querySelector(transientMotionSelector));
+      syncSuppressedState();
+    }, 80);
+  }, { passive: true });
 
   const preparePixelGrid = () => {
     gridColumns = Math.ceil(width / cellSize);
@@ -211,6 +314,11 @@
   };
 
   const paint = (timestamp, force = false) => {
+    if (backgroundSuppressed) {
+      clearCanvas();
+      frame = 0;
+      return;
+    }
     if (!force && timestamp - lastPaint < frameInterval) {
       frame = requestAnimationFrame(paint);
       return;
@@ -254,6 +362,11 @@
 
   const restart = () => {
     cancelAnimationFrame(frame);
+    if (backgroundSuppressed) {
+      clearCanvas();
+      frame = 0;
+      return;
+    }
     if (document.hidden || reducedMotion.matches) {
       paint(performance.now(), true);
       return;
@@ -275,5 +388,6 @@
   reducedMotion.addEventListener?.("change", restart);
 
   resize();
+  syncTransientMotion();
   restart();
 })();
