@@ -29,34 +29,9 @@
   let grainMap = new Float32Array(0);
   let sparkleMap = new Float32Array(0);
   const animationStartedAt = performance.now();
-  let backgroundSuppressed = false;
-  let motionResumeTimer = 0;
-  let motionHoldUntil = 0;
-  let transientMotionActive = false;
   let isScrolling = false;
   let scrollPerformanceTimer = 0;
   const scrollFrameInterval = 54;
-  const transientMotionSelector = [
-    ".intro-transitioning",
-    ".matrix-case-opening",
-    ".experience-workspace.is-switching",
-    ".experience-workspace.is-enter-left",
-    ".experience-workspace.is-enter-right",
-    ".experience-workspace-panel.is-soft-entering",
-    ".career-scan-line.is-running",
-    ".record-matrix.is-wheel-switching",
-    ".record-matrix.is-dragging",
-    ".operating-carousel.is-dragging",
-    ".orbit-visual.is-dragging",
-    ".orbit-project-copy.is-changing",
-    ".orbit-focus-card.is-changing",
-    ".shared-planet.is-transferring",
-    ".shared-planet.is-receiving",
-    ".shared-planet.is-settling",
-    ".shared-planet.is-vanishing",
-    ".shared-planet.is-restoring",
-    ".hero-ambient.is-playing"
-  ].join(",");
 
   const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
   const smoothstep = (minimum, maximum, value) => {
@@ -67,55 +42,6 @@
     const value = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
     return value - Math.floor(value);
   };
-
-  const clearCanvas = () => context.clearRect(0, 0, width, height);
-
-  const syncSuppressedState = () => {
-    const shouldSuppress = transientMotionActive || performance.now() < motionHoldUntil;
-    if (backgroundSuppressed === shouldSuppress) return;
-    backgroundSuppressed = shouldSuppress;
-    document.body?.classList.toggle("dynamic-background-suppressed", backgroundSuppressed);
-    cancelAnimationFrame(frame);
-    frame = 0;
-    if (backgroundSuppressed) {
-      clearCanvas();
-      return;
-    }
-    restart();
-  };
-
-  const syncTransientMotion = () => {
-    transientMotionActive = Boolean(document.querySelector(transientMotionSelector));
-    if (transientMotionActive) holdForMotion(1050);
-    syncSuppressedState();
-  };
-
-  const holdForMotion = (duration = 1200) => {
-    motionHoldUntil = Math.max(motionHoldUntil, performance.now() + duration);
-    syncSuppressedState();
-    clearTimeout(motionResumeTimer);
-    motionResumeTimer = window.setTimeout(() => {
-      motionResumeTimer = 0;
-      syncTransientMotion();
-      if (performance.now() < motionHoldUntil) holdForMotion(motionHoldUntil - performance.now());
-    }, duration + 30);
-  };
-
-  const isBackgroundTarget = (target) => target instanceof Element && (
-    target.closest(".fluid-gradient-background, .gilded-aurora-layer")
-  );
-  const isSmallUiMotion = (target) => target instanceof Element && (
-    target.closest(".matrix-preview, .compass-cursor, .cursor-glow")
-  );
-
-  document.addEventListener("animationstart", (event) => {
-    if (isBackgroundTarget(event.target) || isSmallUiMotion(event.target)) return;
-    const iterationCount = getComputedStyle(event.target).animationIterationCount;
-    if (iterationCount.includes("infinite")) return;
-    holdForMotion(1350);
-  }, { passive: true });
-  const motionObserver = new MutationObserver(syncTransientMotion);
-  motionObserver.observe(document.documentElement, { subtree: true, attributes: true, attributeFilter: ["class"] });
 
   const markScrolling = () => {
     isScrolling = true;
@@ -305,11 +231,6 @@
   };
 
   const paint = (timestamp, force = false) => {
-    if (backgroundSuppressed) {
-      clearCanvas();
-      frame = 0;
-      return;
-    }
     const activeFrameInterval = isScrolling ? scrollFrameInterval : frameInterval;
     if (!force && timestamp - lastPaint < activeFrameInterval) {
       frame = requestAnimationFrame(paint);
@@ -354,11 +275,6 @@
 
   const restart = () => {
     cancelAnimationFrame(frame);
-    if (backgroundSuppressed) {
-      clearCanvas();
-      frame = 0;
-      return;
-    }
     if (document.hidden || reducedMotion.matches) {
       paint(performance.now(), true);
       return;
@@ -380,6 +296,5 @@
   reducedMotion.addEventListener?.("change", restart);
 
   resize();
-  syncTransientMotion();
   restart();
 })();
