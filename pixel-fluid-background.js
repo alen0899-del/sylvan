@@ -102,9 +102,12 @@
   const isBackgroundTarget = (target) => target instanceof Element && (
     target.closest(".fluid-gradient-background, .gilded-aurora-layer")
   );
+  const isSmallUiMotion = (target) => target instanceof Element && (
+    target.closest(".matrix-preview, .compass-cursor, .cursor-glow")
+  );
 
   document.addEventListener("animationstart", (event) => {
-    if (isBackgroundTarget(event.target)) return;
+    if (isBackgroundTarget(event.target) || isSmallUiMotion(event.target)) return;
     const iterationCount = getComputedStyle(event.target).animationIterationCount;
     if (iterationCount.includes("infinite")) return;
     holdForMotion(1350);
