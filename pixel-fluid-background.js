@@ -31,9 +31,9 @@
   const animationStartedAt = performance.now();
   let backgroundSuppressed = false;
   let scrollResumeTimer = 0;
+  let motionResumeTimer = 0;
+  let motionHoldUntil = 0;
   let transientMotionActive = false;
-  let runningFiniteAnimations = 0;
-  let runningTransitions = 0;
   const transientMotionSelector = [
     ".intro-transitioning",
     ".matrix-case-opening",
@@ -69,7 +69,7 @@
   const clearCanvas = () => context.clearRect(0, 0, width, height);
 
   const syncSuppressedState = () => {
-    const shouldSuppress = transientMotionActive || runningFiniteAnimations > 0 || runningTransitions > 0;
+    const shouldSuppress = transientMotionActive || performance.now() < motionHoldUntil;
     if (backgroundSuppressed === shouldSuppress) return;
     backgroundSuppressed = shouldSuppress;
     document.body?.classList.toggle("dynamic-background-suppressed", backgroundSuppressed);
@@ -84,17 +84,19 @@
 
   const syncTransientMotion = () => {
     transientMotionActive = Boolean(document.querySelector(transientMotionSelector));
+    if (transientMotionActive) holdForMotion(1050);
     syncSuppressedState();
   };
 
-  const animationCounts = new WeakMap();
-  const markFiniteAnimation = (target, delta) => {
-    if (!(target instanceof Element)) return;
-    const count = Math.max(0, (animationCounts.get(target) || 0) + delta);
-    if (count) animationCounts.set(target, count);
-    else animationCounts.delete(target);
-    runningFiniteAnimations = Math.max(0, runningFiniteAnimations + delta);
+  const holdForMotion = (duration = 1200) => {
+    motionHoldUntil = Math.max(motionHoldUntil, performance.now() + duration);
     syncSuppressedState();
+    clearTimeout(motionResumeTimer);
+    motionResumeTimer = window.setTimeout(() => {
+      motionResumeTimer = 0;
+      syncTransientMotion();
+      if (performance.now() < motionHoldUntil) holdForMotion(motionHoldUntil - performance.now());
+    }, duration + 30);
   };
 
   const isBackgroundTarget = (target) => target instanceof Element && (
@@ -105,35 +107,8 @@
     if (isBackgroundTarget(event.target)) return;
     const iterationCount = getComputedStyle(event.target).animationIterationCount;
     if (iterationCount.includes("infinite")) return;
-    markFiniteAnimation(event.target, 1);
+    holdForMotion(1350);
   }, { passive: true });
-  document.addEventListener("animationend", (event) => {
-    if (isBackgroundTarget(event.target)) return;
-    const iterationCount = getComputedStyle(event.target).animationIterationCount;
-    if (iterationCount.includes("infinite")) return;
-    markFiniteAnimation(event.target, -1);
-  }, { passive: true });
-  document.addEventListener("animationcancel", (event) => {
-    if (isBackgroundTarget(event.target)) return;
-    const iterationCount = getComputedStyle(event.target).animationIterationCount;
-    if (iterationCount.includes("infinite")) return;
-    markFiniteAnimation(event.target, -1);
-  }, { passive: true });
-
-  const markTransition = (delta) => {
-    runningTransitions = Math.max(0, runningTransitions + delta);
-    syncSuppressedState();
-  };
-  document.addEventListener("transitionrun", (event) => {
-    if (!isBackgroundTarget(event.target)) markTransition(1);
-  }, { passive: true });
-  document.addEventListener("transitionend", (event) => {
-    if (!isBackgroundTarget(event.target)) markTransition(-1);
-  }, { passive: true });
-  document.addEventListener("transitioncancel", (event) => {
-    if (!isBackgroundTarget(event.target)) markTransition(-1);
-  }, { passive: true });
-
   const motionObserver = new MutationObserver(syncTransientMotion);
   motionObserver.observe(document.documentElement, { subtree: true, attributes: true, attributeFilter: ["class"] });
 
