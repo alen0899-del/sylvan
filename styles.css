@@ -2478,6 +2478,32 @@ body.matrix-case-opening .record-matrix-stage,body.matrix-case-opening .matrix-p
   .matrix-preview,.case-reader-chrome{backdrop-filter:none;background:#0d1b30}
 }
 
+/* Keep the compass pointer visible and consistent inside every full-screen
+   reader, project detail and editing surface. */
+@media(pointer:fine){
+  html body.project-dialog-open *,
+  html body.case-media-open *,
+  html body.pdf-viewer-open *,
+  html body.portfolio-copy-editor-open *,
+  html body.portfolio-image-editor-open *,
+  html body.portfolio-copy-selecting *,
+  html body.portfolio-image-selecting *{cursor:none!important}
+  html body.project-dialog-open .compass-cursor,
+  html body.case-media-open .compass-cursor,
+  html body.pdf-viewer-open .compass-cursor,
+  html body.portfolio-copy-editor-open .compass-cursor,
+  html body.portfolio-image-editor-open .compass-cursor,
+  html body.portfolio-copy-selecting .compass-cursor,
+  html body.portfolio-image-selecting .compass-cursor{display:block!important;opacity:0!important}
+  html body.pointer-is-active.project-dialog-open .compass-cursor,
+  html body.pointer-is-active.case-media-open .compass-cursor,
+  html body.pointer-is-active.pdf-viewer-open .compass-cursor,
+  html body.pointer-is-active.portfolio-copy-editor-open .compass-cursor,
+  html body.pointer-is-active.portfolio-image-editor-open .compass-cursor,
+  html body.pointer-is-active.portfolio-copy-selecting .compass-cursor,
+  html body.pointer-is-active.portfolio-image-selecting .compass-cursor{opacity:1!important}
+}
+
 /* Final PROFILE polish: keep every tab label on two independent rows so the
    company/title and the date/status can never cover one another. */
 .experience-tab{
